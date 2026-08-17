@@ -5,6 +5,8 @@ import NotFound from "./pages/NotFound";
 import Thanks from "./pages/Thanks";
 import PitchRES from "./pages/PitchRES";
 import Webinar from "./pages/Webinar";
+import Training from "./pages/Training";
+import TrainingThanks from "./pages/TrainingThanks";
 
 
 export default function App() {
@@ -16,6 +18,9 @@ export default function App() {
       <Route path="/pitch/res" element={<PitchRES />} />
       <Route path="/pitch" element={<PitchVSL />} />
       <Route path="/thank-you" element={<Thanks />} />
+      <Route path="/training" element={<Training />} />
+      <Route path="/training-vsl" element={<Training />} />
+      <Route path="/training/thank-you" element={<TrainingThanks />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
