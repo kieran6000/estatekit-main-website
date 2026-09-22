@@ -4,21 +4,27 @@
 // Everything below marked TODO needs a real value before you send ad
 // traffic here. Nothing will crash if you launch with placeholders — the
 // video slots just show a "coming soon" placeholder and the WhatsApp
-// button/Cal embed will point at a dead link until you fill them in.
+// button will point at a dead link until you fill them in.
 // ─────────────────────────────────────────────────────────────────────────
 
-// TODO: Cal.com event for "reserve your seat". Create an event type in your
-// Cal.com dashboard for the training (a specific date/time, same as your
-// other booking events) and put its slug here, e.g. "estatekit/free-training".
-// Also set that event's "Redirect URL on booking" to:
-//   /training/thank-you
-// so it appends attendeeName / attendeeEmail / attendeeStartTime / phone,
-// same as the existing 10listingappts events do for /thank-you.
-export const TRAINING_CAL_LINK = "estatekit/free-training";
-export const TRAINING_CAL_NAMESPACE = "free-training";
+// EstateKit-hosted registration/calendar embed for "reserve your seat"
+// (replaces the old Cal.com embed on /training, /training-vsl,
+// /juani-results, /sakhile-results). NOTE: since this is a plain iframe to
+// a page we don't control, we have no in-page signal when a booking
+// succeeds — confirm this page still redirects to /training/thank-you with
+// attendeeName/attendeeEmail/attendeeStartTime/phone query params (same as
+// the old Cal.com "Redirect URL on booking" setting did), otherwise the
+// thank-you page's tracking and the WhatsApp confirm flow have no data to
+// work with.
+export const TRAINING_BOOKING_EMBED_URL = "https://media.estatekit.co/free-training";
 
 // TODO: Wistia media ID for the training VSL/teaser shown on /training-vsl.
 export const TRAINING_VSL_MEDIA_ID = "";
+
+// YouTube video testimonials — shown on /training (and /training-vsl) and on
+// each agent's dedicated results landing page (/juani-results, /sakhile-results).
+export const JUANI_YOUTUBE_ID = "vjQp-IXkHpA";
+export const SAKHILE_YOUTUBE_ID = "7YA7e63M9EM";
 
 // TODO: your free WhatsApp group invite link (chat.whatsapp.com/...).
 export const TRAINING_WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/REPLACE_ME";

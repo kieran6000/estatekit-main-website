@@ -1,6 +1,14 @@
 import { Link } from 'react-router-dom'
+import { usePageMeta } from '../hooks/usePageMeta'
 
 export default function NotFound() {
+  usePageMeta({
+    title: 'Page Not Found | EstateKit',
+    description: "The page you're looking for doesn't exist.",
+    path: '/404',
+    noindex: true,
+  })
+
   return (
     <div className="bg-white text-slate-900 antialiased min-h-screen flex flex-col items-center justify-center px-4 text-center">
       <span className="text-brand font-black text-4xl tracking-tight mb-8">EstateKit</span>

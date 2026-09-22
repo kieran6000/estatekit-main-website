@@ -7,6 +7,8 @@ import PitchRES from "./pages/PitchRES";
 import Webinar from "./pages/Webinar";
 import Training from "./pages/Training";
 import TrainingThanks from "./pages/TrainingThanks";
+import JuaniResults from "./pages/JuaniResults";
+import SakhileResults from "./pages/SakhileResults";
 
 
 export default function App() {
@@ -21,6 +23,8 @@ export default function App() {
       <Route path="/training" element={<Training />} />
       <Route path="/training-vsl" element={<Training />} />
       <Route path="/training/thank-you" element={<TrainingThanks />} />
+      <Route path="/juani-results" element={<JuaniResults />} />
+      <Route path="/sakhile-results" element={<SakhileResults />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

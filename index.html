@@ -4,8 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EstateKit — Guaranteed Listing Appointments</title>
+    <meta
+      name="description"
+      content="Real estate specialised marketing for South African agents. Lead generation, ISA services, CRM & nurturing — all done in-house, with guaranteed results."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://app.cal.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -21,67 +27,7 @@
       async
       type="module"
     ></script>
-    <!-- Discord Visit Logger -->
-    <script>
-    (async function () {
-      const WEBHOOK = "https://discord.com/api/webhooks/1403151508287127582/ReH3dRhqmN2pGoslGMFgIE30aj4xQymtHCMmn3Di4XmdjNpxPL5SlmROkWpM9nwAch64";
-      const fullUrl = window.location.href;
-      const ts      = new Date();
- 
-      const stamp = ts.toLocaleString("en-US", {
-        month: "numeric", day: "numeric", year: "numeric",
-        hour: "numeric", minute: "2-digit", hour12: true
-      });
- 
-      const ua = navigator.userAgent;
-      const deviceEmoji = /tablet|ipad|playbook|silk|(android(?!.*mobile))/i.test(ua)
-        ? "📟"
-        : /mobile|iphone|ipod|android|blackberry|opera mini|iemobile/i.test(ua)
-          ? "📱"
-          : "🖥️";
- 
-      let ip   = "Unknown IP";
-      let city = "Unknown location";
-      try {
-        const geo = await fetch("https://ipapi.co/json/").then(r => r.json());
-        ip   = geo.ip   || ip;
-        city = [geo.city, geo.country_name].filter(Boolean).join(", ") || city;
-      } catch (_) {}
- 
-      fetch(WEBHOOK, {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: "visit log",
-          embeds: [{
-            description: `${deviceEmoji}  \`${ip}\` | **${city}** | ${fullUrl}`,
-            color: 0x57F287,
-            footer: { text: stamp }
-          }]
-        })
-      }).catch(() => {});
- 
-      setTimeout(() => {
-        const stamp2 = new Date().toLocaleString("en-US", {
-          month: "numeric", day: "numeric", year: "numeric",
-          hour: "numeric", minute: "2-digit", hour12: true
-        });
-        fetch(WEBHOOK, {
-          method:  "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: "visit log",
-            embeds: [{
-              description: `⏱️  \`${ip}\` | over 25s on ${fullUrl}`,
-              color: 0xFEE75C,
-              footer: { text: stamp2 }
-            }]
-          })
-        }).catch(() => {});
-      }, 25000);
-    })();
-    </script>
-    <!-- End Discord Visit Logger -->
+    <script>!function(w,d,s,u,n,a,b){if(w[n])return;a=w[n]={q:[],t:+new Date,s:[],o:u,track:function(){a.q.push([+new Date].concat([].slice.call(arguments)))},setScope:function(){a.s=[].slice.call(arguments).filter(function(x){return typeof x==="string"});a.q.push([+new Date,"setScope"].concat(a.s))},scope:function(){var c=[].slice.call(arguments);return{track:function(){a.q.push([+new Date].concat([].slice.call(arguments)).concat([{__scope:c}]))}}}};b=d.createElement(s);b.async=1;b.src=u+"/s.js";d.getElementsByTagName(s)[0].parentNode.insertBefore(b,d.getElementsByTagName(s)[0])}(window,document,"script","https://t.whop.tw","whop");whop.setScope("biz_kb66IiWjjFtH6v");whop.track("page");</script>
   </head>
   <body>
     <div id="root"></div>

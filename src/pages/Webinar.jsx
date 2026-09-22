@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { usePageMeta } from "../hooks/usePageMeta";
 import "./Webinar.css";
 
 // ── Config, edit these to launch ──────────────────────────────────────────────
@@ -57,9 +58,12 @@ function VideoFrame({ url, placeholder }) {
 export default function Webinar() {
   const [scrolled, setScrolled] = useState(false);
 
-  useEffect(() => {
-    document.title = "EstateKit, Book Pre-Qualified Seller Appointments Without Cold Calling";
-  }, []);
+  usePageMeta({
+    title: "Book Pre-Qualified Seller Appointments Without Cold Calling | EstateKit",
+    description:
+      "How South African real estate agents are booking pre-qualified seller appointments without making a single cold call.",
+    path: "/webinar",
+  });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);

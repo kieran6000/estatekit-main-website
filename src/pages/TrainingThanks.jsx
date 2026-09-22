@@ -1,12 +1,20 @@
-import { useState, useEffect } from "react";
 import { FaWhatsapp, FaCheck } from "react-icons/fa";
+import { useVisitTracking } from "../hooks/useVisitTracking";
+import { usePageMeta } from "../hooks/usePageMeta";
+import { formatDuration } from "../lib/analytics";
+import { wistiaEmbedHtml } from "../lib/wistiaEmbed";
+import StepHeader from "../components/StepHeader";
+import TestimonialImage from "../components/TestimonialImage";
 
 import calaccept from "../../assets/calaccept.webp";
+import sectionBg from "../../assets/section-bg.jpg";
 import roster from "../../assets/roster.png";
 import angie from "../../assets/angie.png";
 import lebo from "../../assets/lebo.webp";
 import mpho from "../../assets/mpho.jpg";
 import thabo from "../../assets/thabo.webp";
+import logo from "../../assets/primary.svg";
+import logo2 from "../../assets/darkfull.png";
 
 import test1 from "../../assets/Layer 1.png";
 import test3 from "../../assets/Layer 3.png";
@@ -96,329 +104,29 @@ const TESTIMONIAL_IMAGES = [
   { src: test4 },
 ];
 
-const WISTIA_EMBED = (id) => `
-  <script src="https://fast.wistia.com/embed/${id}.js" async type="module"></script>
-  <style>
-    wistia-player[media-id='${id}']:not(:defined) {
-      background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/${id}/swatch');
-      display: block;
-      filter: blur(5px);
-      padding-top: 56.25%;
-    }
-  </style>
-  <wistia-player media-id="${id}" seo="false" aspect="1.7777777777777777"></wistia-player>
-`;
-
-const DISCORD_WEBHOOK =
-  "https://discord.com/api/webhooks/1403151508287127582/ReH3dRhqmN2pGoslGMFgIE30aj4xQymtHCMmn3Di4XmdjNpxPL5SlmROkWpM9nwAch64";
-
-// ─── Tracking Helpers ─────────────────────────────────────────────────────────
-
-const getDeviceInfo = () => {
-  const ua = navigator.userAgent;
-
-  const os = /iPhone|iPad|iPod/.test(ua)
-    ? "iOS"
-    : /Android/.test(ua)
-      ? "Android"
-      : /Windows/.test(ua)
-        ? "Windows"
-        : /Mac/.test(ua)
-          ? "macOS"
-          : /Linux/.test(ua)
-            ? "Linux"
-            : "Unknown";
-
-  const device = /iPhone/.test(ua)
-    ? "iPhone"
-    : /iPad/.test(ua)
-      ? "iPad"
-      : /Android.*Mobile/.test(ua)
-        ? "Android Phone"
-        : /Android/.test(ua)
-          ? "Android Tablet"
-          : window.innerWidth < 768
-            ? "Mobile"
-            : "Desktop";
-
-  const browser =
-    /Chrome/.test(ua) && !/Edg/.test(ua)
-      ? "Chrome"
-      : /Safari/.test(ua) && !/Chrome/.test(ua)
-        ? "Safari"
-        : /Firefox/.test(ua)
-          ? "Firefox"
-          : /Edg/.test(ua)
-            ? "Edge"
-            : "Other";
-
-  return { os, device, browser };
+const EVENT_COLORS = {
+  "🎓 Training Reservation Page Viewed": 0x3498db, // Blue
+  "⏱️ Still on page": 0xf1c40f, // Yellow
+  "🚪 Left the Page": 0xe74c3c, // Red
+  "✅ WhatsApp Confirmed": 0x2ecc71, // Green
 };
-
-const getLocation = async () => {
-  try {
-    const res = await fetch("https://ipapi.co/json/");
-    const d = await res.json();
-
-    return {
-      full: `${d.city}, ${d.region}, ${d.country_name}`,
-      countryCode: d.country_code,
-    };
-  } catch {
-    return {
-      full: "Unknown",
-      countryCode: null,
-    };
-  }
-};
-
-const formatDuration = (seconds) =>
-  seconds < 60
-    ? `${seconds}s`
-    : `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-const StepHeader = ({ children }) => (
-  <p className="mt-5 font-extrabold font-sans text-2xl md:text-3xl bg-brand w-full text-white text-center py-1 rounded">
-    {children}
-  </p>
-);
-
-const TestimonialImage = ({ src, credit }) => (
-  <div className="mx-auto">
-    <img
-      src={src}
-      className="max-w-sm w-full mx-auto h-fit drop-shadow"
-      alt=""
-    />
-    {credit && (
-      <div className="flex mx-auto w-fit items-center gap-2 mt-2">
-        <img
-          src={credit.img}
-          alt={credit.name}
-          className="h-10 w-10 object-cover rounded-full"
-        />
-        <p className="font-semibold text-gray-700">
-          {credit.name} — {credit.caption}
-        </p>
-      </div>
-    )}
-  </div>
-);
-
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 const TrainingThanks = () => {
-  const [attendeeData, setAttendeeData] = useState({});
+  usePageMeta({
+    title: "Your Seat Is Not Reserved Yet | EstateKit",
+    description: "Complete these steps to lock in your free training seat.",
+    path: "/training/thank-you",
+    noindex: true,
+  });
 
-  // ─── Discord Embed Helpers ─────────────────────────────────────
-
-  const EVENT_COLORS = {
-    "🎓 Training Reservation Page Viewed": 0x3498db, // Blue
-    "⏱️ Still on page": 0xf1c40f, // Yellow
-    "🚪 Left the Page": 0xe74c3c, // Red
-    "✅ WhatsApp Confirmed": 0x2ecc71, // Green
-  };
-
-  const getFlagEmoji = (countryCode) => {
-    if (!countryCode || countryCode.length !== 2) return "🌍";
-    return countryCode
-      .toUpperCase()
-      .split("")
-      .map((char) => String.fromCodePoint(127397 + char.charCodeAt()))
-      .join("");
-  };
-
-  const formatClicks = (clicks) => {
-    if (!clicks || !clicks.length) return "None";
-
-    return clicks
-      .slice(0, 10)
-      .map((c) => `• ${c.element} — ${c.text} (${c.at})`)
-      .join("\n");
-  };
-
-  const generateAvatar = (name) => {
-    const seed = encodeURIComponent(name || "Unknown");
-    return `https://api.dicebear.com/7.x/initials/png?seed=${seed}`;
-  };
-
-  const logToDiscord = async (event, data) => {
-    try {
-      const flag = getFlagEmoji(data["🌎 Country Code"]);
-
-      const fields = [
-        {
-          name: "👤 Prospect",
-          value: `**${data["👤 Name"] || "Unknown"}**`,
-          inline: true,
-        },
-        {
-          name: "📍 Location",
-          value: `${flag} ${data["📍 Location"] || "Unknown"}`,
-          inline: true,
-        },
-        {
-          name: "💻 Device",
-          value: data["💻 Device"] || "Unknown",
-          inline: true,
-        },
-        {
-          name: "📧 Email",
-          value: data["📧 Email"] || "Not provided",
-          inline: false,
-        },
-        {
-          name: "📞 Phone",
-          value: data["📞 Phone"] || "Not provided",
-          inline: false,
-        },
-        {
-          name: "⏱️ Engagement",
-          value:
-            `Time Spent: ${data["⏱️ Time Spent"] || "—"}\n` +
-            `Max Scroll: ${data["📜 Max Scroll"] || "—"}`,
-          inline: false,
-        },
-        {
-          name: "🖱️ Click Activity",
-          value: formatClicks(data["🖱️ Clicks"]),
-          inline: false,
-        },
-        {
-          name: "🔗 Source",
-          value:
-            `UTM: ${data["🔗 UTM Source"] || "direct"}\n` +
-            `Referrer: ${data["↩️ Referrer"] || "direct"}`,
-          inline: false,
-        },
-      ];
-
-      await fetch(DISCORD_WEBHOOK, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          embeds: [
-            {
-              title: event,
-              color: EVENT_COLORS[event] || 0x5865f2,
-              thumbnail: {
-                url: generateAvatar(data["👤 Name"]),
-              },
-              fields,
-              footer: {
-                text: "EstateKit Training Funnel • Live Tracking",
-              },
-              timestamp: new Date().toISOString(),
-            },
-          ],
-        }),
-      });
-    } catch (err) {
-      console.error("Discord log failed:", err);
-    }
-  };
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const startTime = Date.now();
-    const { os, device, browser } = getDeviceInfo();
-
-    // Mutable refs for scroll/clicks (no re-render needed)
-    let locationStr = "Fetching...";
-    let maxScroll = 0;
-    const clicks = [];
-
-    // ── Set attendee state ──
-    const data = {
-      name: params.get("attendeeName"),
-      email: params.get("attendeeEmail"),
-      time: params.get("attendeeStartTime"),
-      phone: params.get("phone"),
-      utm: params.get("utm_source") || "direct",
-    };
-    setAttendeeData(data);
-
-    // ── Scroll tracking ──
-    const handleScroll = () => {
-      const pct = Math.round(
-        (window.scrollY / (document.body.scrollHeight - window.innerHeight)) *
-          100,
-      );
-      if (pct > maxScroll) maxScroll = pct;
-    };
-
-    // ── Click tracking ──
-    const handleClick = (e) => {
-      const tag = e.target.closest("button, a");
-      if (tag) {
-        clicks.push({
-          element: tag.tagName.toLowerCase(),
-          text: tag.innerText?.trim().slice(0, 40) || "(no text)",
-          at: formatDuration(Math.round((Date.now() - startTime) / 1000)),
-        });
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    document.addEventListener("click", handleClick);
-
-    // ── Initial page view log (after location resolves) ──
-    const logView = async () => {
-      const loc = await getLocation();
-      locationStr = loc.full;
-      const countryCode = loc.countryCode;
-      logToDiscord("🎓 Training Reservation Page Viewed", {
-        "👤 Name": data.name || "Unknown",
-        "📧 Email": data.email || "Not provided",
-        "📞 Phone": data.phone || "Not provided",
-        "📍 Location": locationStr,
-        "🌎 Country Code": countryCode,
-        "💻 Device": `${device} · ${os} · ${browser}`,
-        "🔗 UTM Source": data.utm,
-        "↩️ Referrer": document.referrer || "direct",
-      });
-    };
-    logView();
-
-    // ── Time-on-page checkpoints ──
-    const CHECKPOINTS = [30, 60, 120, 180, 300]; // seconds
-    const timers = CHECKPOINTS.map((secs) =>
-      setTimeout(() => {
-        logToDiscord(`⏱️ Still on page — ${formatDuration(secs)}`, {
-          "👤 Name": data.name || "Unknown",
-          "📍 Location": locationStr,
-          "💻 Device": `${device} · ${os} · ${browser}`,
-          "📜 Max Scroll": `${maxScroll}%`,
-          "🖱️ Clicks": clicks.length ? clicks : "None yet",
-        });
-      }, secs * 1000),
-    );
-
-    // ── Page leave log ──
-    const handleLeave = () => {
-      logToDiscord("🚪 Left the Page", {
-        "👤 Name": data.name || "Unknown",
-        "📍 Location": locationStr,
-        "💻 Device": `${device} · ${os} · ${browser}`,
-        "⏱️ Time Spent": formatDuration(
-          Math.round((Date.now() - startTime) / 1000),
-        ),
-        "📜 Max Scroll": `${maxScroll}%`,
-        "🖱️ Clicks": clicks.length ? clicks : "None",
-      });
-    };
-    window.addEventListener("beforeunload", handleLeave);
-
-    // ── Cleanup ──
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      document.removeEventListener("click", handleClick);
-      window.removeEventListener("beforeunload", handleLeave);
-      timers.forEach(clearTimeout);
-    };
-  }, []);
+  const { attendeeData, logToDiscord } = useVisitTracking({
+    viewEvent: "🎓 Training Reservation Page Viewed",
+    stillOnPageEvent: (secs) => `⏱️ Still on page — ${formatDuration(secs)}`,
+    leftPageEvent: "🚪 Left the Page",
+    eventColors: EVENT_COLORS,
+    footerText: "EstateKit Training Funnel • Live Tracking",
+  });
 
   const handleConfirm = () => {
     const date = attendeeData.time ? new Date(attendeeData.time) : null;
@@ -453,163 +161,223 @@ const TrainingThanks = () => {
 
   return (
     <div className="bg-white">
-      {/* Banner */}
-      <div className="bg-red-600 text-white px-2 h-14 flex items-center justify-center md:mb-20 mb-10 w-full">
-        <p className="font-extrabold text-2xl tracking-wide leading-none">
-          IMPORTANT:{" "}
-          <span className="italic font-medium">
-            Do not close or leave this page!
-          </span>
-        </p>
-      </div>
-
-      {/* Intro */}
-      <section className="max-w-4xl px-3 mx-auto flex flex-col montserrat text-black font-extrabold">
-        <h3 className="md:text-5xl text-2xl uppercase text-center">
-          Wait! <span className="underline_tx">Your seat is not reserved yet...</span>
-        </h3>
-        <p className="mt-5 font-medium text-lg md:text-2xl text-center">
-          …lock it in by following these <strong>3 simple steps</strong> 👇
-        </p>
-
-        {/* Step 1 */}
-        <div className="w-full mt-5">
-          <StepHeader>Step #1: Join The Free WhatsApp Group</StepHeader>
-          <p className="mt-5 font-medium text-lg md:text-2xl">
-            The moment you're in, we'll send exclusive resources and
-            actionable steps straight to your phone — before the training
-            even starts.
-          </p>
-          <a
-            href={TRAINING_WHATSAPP_GROUP_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-5 bg-green-500 hover:bg-green-600 text-white font-bold p-5 md:px-7 md:py-5 rounded-xl text-2xl md:text-3xl leading-none drop-shadow w-full flex items-center justify-center gap-3"
-          >
-            <FaWhatsapp className="text-4xl" /> Join The WhatsApp Group
-          </a>
-        </div>
-
-        {/* Step 2 */}
-        <div className="w-full mt-10">
-          <StepHeader>Step #2: Add The Training To Your Calendar</StepHeader>
-          <img
-            src={calaccept}
-            alt="Calendar Accept"
-            className="w-full border-4 rounded-2xl border-brand mt-5"
+     <div className="bg-red-600 text-white px-4 py-4 flex items-center justify-center gap-1 w-full">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 28 28"
+          fill="none"
+        >
+          <circle cx="13.8336" cy="13.8336" r="13.8336" fill="white" />
+          <path
+            d="M14 6V16"
+            stroke="#DC2626"
+            strokeWidth="2.5"
+            strokeLinecap="round"
           />
-          <p className="mt-5 font-medium text-lg md:text-2xl">
-            Please confirm your spot by selecting "Yes" in the email
-            calendar invite (select "Add to calendar" so you don't miss the
-            training).
-          </p>
-        </div>
-
-        {/* Step 3 */}
-        <div className="w-full mt-10">
-          <StepHeader>Step #3: Confirm Your Seat</StepHeader>
-          <p className="mt-5 font-medium text-lg md:text-2xl">
-            Tap the button below.{" "}
-            <strong>
-              This is required to secure your spot in the training.
-            </strong>
-            <br />
-            <br />
-            You will receive a reply from us to confirm your registration.
-          </p>
-          <button
-            onClick={handleConfirm}
-            className="mt-5 bg-green-500 hover:bg-green-600 text-white font-bold p-5 md:px-7 md:py-5 rounded-xl text-2xl md:text-3xl leading-none drop-shadow w-full flex items-center justify-center gap-3"
-          >
-            <FaWhatsapp className="text-4xl" /> Confirm My Seat
-          </button>
-        </div>
-      </section>
-
-      {/* FAQ breakout videos */}
-      <div className="mt-16">
-        <FaqVideos />
+          <circle cx="14" cy="20.5" r="1.5" fill="#DC2626" />
+        </svg>
+        <strong className="text-xl font-bold">
+          IMPORTANT: DO NOT CLOSE THIS PAGE!
+        </strong>
       </div>
 
-      {/* Benefits */}
-      <section className="max-w-4xl px-2 mx-auto mt-6 montserrat font-extrabold">
-        <h2 className="md:text-4xl text-3xl uppercase text-center mb-2">
-          Why is EstateKit <span className="text-green-600">The Best Way</span>
-        </h2>
-        <h2 className="md:text-4xl text-3xl uppercase text-center mb-8">
-          To Scale Your Real Estate Business?
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {BENEFITS.map((b, i) => (
-            <div
-              key={i}
-              className="flex gap-3 items-start bg-gray-50 p-4 rounded-lg"
-            >
-              <FaCheck className="text-green-500 mt-1 flex-shrink-0 text-xl" />
-              <p className="font-semibold text-gray-800 text-sm md:text-base">
-                {b}
-              </p>
-            </div>
-          ))}
+      {/* Registration Details Header */}
+      <section className="mx-auto py-10 text-center">
+        <h1 className="text-2xl md:text-4xl font-black uppercase leading-tight mb-2">
+          YOUR REGISTRATION DETAILS
+        </h1>
+        <p className="text-2xl font-medium text-gray-800">
+          Are Inside This Video
+        </p>
+      </section>
+
+      {/* Video Embed */}
+      <section className="max-w-2xl mx-auto px-4 sm:px-6 mb-12">
+        <div
+          className="aspect-video w-full rounded-lg overflow-hidden"
+          dangerouslySetInnerHTML={{ __html: wistiaEmbedHtml("ahm5osiwq8") }}
+        />
+      </section>
+
+      {/* Event Details Section */}
+      <section
+        className="relative overflow-hidden py-12 sm:py-16"
+        style={{
+          backgroundImage: `url(${sectionBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 relative z-10">
+           <div className="text-center mb-5">
+            <p className="text-2xl md:text-3xl font-bold capitalize text-black">Add it to your calendar</p>
+          </div>
+          {/* Event Info Header */}
+          <div className="bg-white/95 transform scale-110 mx-auto w-fit px-3 sm:px-4 py-2 drop-shadow rounded-md text-xs sm:text-sm md:text-base text-slate-900 my-5 font-black tracking-wide flex items-center justify-center gap-1 flex-wrap max-w-full sm:w-fit">
+            <span className="text-red-500 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
+              <div className="bg-red-500 rounded-full min-w-2 min-h-2 sm:min-w-3 sm:min-h-3"></div>
+              <span>LIVE TRAINING</span>
+            </span>
+            <span className="hidden sm:inline text-slate-400"> </span>
+            <span className="hidden sm:inline text-slate-900">FREE EVENT</span>
+            <span className="inline text-slate-900"> | </span>
+            <span className="whitespace-nowrap text-slate-900">SEP. 10TH, 2026</span>
+          </div>
+
+          {/* Time */}
+          <div className="text-center my-5">
+            <p className="text-3xl font-black text-black">7PM SAST</p>
+          </div>
+
+          {/* Calendar Buttons */}
+          <div className="space-y-3 mb-8 max-w-xs mx-auto">
+            <button className="w-full bg-brand text-white py-5 rounded-full font-bold text-xl transition flex items-center justify-center gap-2 shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white">
+                <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+              </svg>
+              Apple Calendar
+            </button>
+            <button className="w-full bg-brand text-white py-5 rounded-full font-bold text-xl transition flex items-center justify-center gap-2 shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white">
+                <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+              </svg>
+              Google Calendar
+            </button>
+            <button className="w-full bg-brand text-white py-5 rounded-full font-bold text-xl transition flex items-center justify-center gap-2 shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white">
+                <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+              </svg>
+              Outlook Calendar
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="max-w-4xl px-2 mx-auto mt-10 montserrat font-extrabold">
-        <img src={roster} className="mb-10 rounded drop-shadow" alt="" />
-        <h3 className="md:text-5xl text-3xl uppercase text-center">
+      {/* Screenshot & Save Section */}
+      <section className="relative overflow-hidden py-12 sm:py-16" style={{
+          backgroundImage: `url(${sectionBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}>
+        <div className="text-center mb-12">
+          <img src={logo2} alt="EstateKit Logo" className="h-9 mx-auto mb-5" />
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-wide mb-8">
+            SCREENSHOT &amp; SAVE
+          </h2>
+        </div>
+
+        {/* Event Details Boxes */}
+        <div className="space-y-3 mb-8 max-w-sm mx-auto">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-3 shadow-sm">
+            <span className="text-red-600 font-bold text-lg">🔴</span>
+            <div>
+              <span className="font-black text-red-600 text-sm">LIVE</span>
+              <span className="font-bold text-gray-800 ml-2">VIRTUAL EVENT</span>
+            </div>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-3 shadow-sm">
+            <span className="text-gray-400 text-lg">📅</span>
+            <div>
+              <span className="font-black text-gray-800 text-sm">SEP. 10, 2026 | 9AM PT (12PM ET)</span>
+            </div>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-3 shadow-sm">
+            <span className="text-gray-400 text-lg">🔗</span>
+            <div>
+              <span className="font-black text-red-600 text-sm">ATTEND LIVE AT</span>
+              <a href="#" className="font-bold text-red-600 ml-2 hover:underline">LIVE.ACQ.COM</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="max-w-4xl px-4 sm:px-6 mx-auto mb-12">
+        <img src={roster} className="mb-10 rounded drop-shadow w-full" alt="Testimonial Roster" />
+        <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase text-center mb-6">
           Here's What Other{" "}
-          <span className="text-brand">Real Estate Agents</span> Are Saying:
+          <span className="text-purple-600">Real Estate Agents</span> Are Saying:
         </h3>
-        <p className="mt-5 font-medium text-lg md:text-2xl text-center">
-          Lebogang M. - "Chef's Kiss" - 65+ Leads at R9 each in 3 Days, 12
-          Opportunities
+        <p className="mt-5 font-bold text-base sm:text-lg md:text-xl text-center mb-6">
+          Lebogang M. - "Chef's Kiss" - 65+ Leads at R9 each in 3 Days, 12 Opportunities
         </p>
         <div
-          className="mt-3 aspect-video w-full rounded overflow-hidden"
-          dangerouslySetInnerHTML={{ __html: WISTIA_EMBED("ahm5osiwq8") }}
+          className="aspect-video w-full rounded-lg overflow-hidden mb-8"
+          dangerouslySetInnerHTML={{ __html: wistiaEmbedHtml("olb5byx60v") }}
         />
-        <div
-          className="mt-3 aspect-video w-full rounded overflow-hidden"
-          dangerouslySetInnerHTML={{ __html: WISTIA_EMBED("olb5byx60v") }}
-        />
-        <p className="font-bold text-xl md:text-2xl text-center mt-5">
-          Agents in your area using this system are getting results like these
-          RIGHT NOW...
+        <p className="font-bold text-lg sm:text-xl md:text-2xl text-center mb-8">
+          Agents in your area using this system are getting results like these RIGHT NOW...
         </p>
-        <div className="flex flex-wrap gap-2 my-5">
+        <div className="flex flex-wrap gap-2 justify-center">
           {TESTIMONIAL_IMAGES.map((t, i) => (
             <TestimonialImage key={i} {...t} />
           ))}
         </div>
       </section>
 
-      {/* Who It's For */}
-      <section className="max-w-4xl px-2 mx-auto mt-16 mb-16 montserrat font-extrabold">
-        <h2 className="md:text-4xl text-2xl uppercase text-center mb-8">
-          Who This Is For:
-        </h2>
-        <div className="space-y-4 mb-12">
-          {FOR.map((item, i) => (
-            <div key={i} className="flex gap-3 items-start">
-              <span className="text-2xl text-green-600 flex-shrink-0">✔</span>
-              <p className="text-lg text-gray-800 font-semibold">{item}</p>
-            </div>
-          ))}
-        </div>
+      {/* Win Prizes Section */}
+      <section className="bg-slate-900 text-white py-12 sm:py-16 px-4 sm:px-6">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-center mb-6">
+            Win Prizes by Referring Friends
+          </h2>
+          
+          <div className="text-center mb-8">
+            <p className="text-base sm:text-lg mb-4">Some of the prizes include:</p>
+            <ul className="space-y-2 text-left max-w-sm mx-auto mb-6">
+              <li className="flex items-start gap-2">
+                <span className="text-purple-400">•</span>
+                <span>Dinner with Alex</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-purple-400">•</span>
+                <span>Full Day at Acquisition.com HQ</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-purple-400">•</span>
+                <span>Bonus Free Book</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-purple-400">•</span>
+                <span>and More.</span>
+              </li>
+            </ul>
+            <p className="text-base sm:text-lg mb-8">
+              Invite people by sending to your email list, company, and friends.
+            </p>
+          </div>
 
-        <h2 className="md:text-4xl text-2xl uppercase text-center mb-8">
-          Who This Is NOT For:
-        </h2>
-        <div className="space-y-4">
-          {NOT_FOR.map((item, i) => (
-            <div key={i} className="flex gap-3 items-start">
-              <span className="text-2xl text-red-600 flex-shrink-0">❌</span>
-              <p className="text-lg text-gray-800 font-semibold">{item}</p>
+          <a href="#" className="block bg-purple-600 text-white py-4 md:py-5 rounded-full font-black text-base sm:text-lg md:text-xl text-center hover:bg-purple-700 transition mb-8">
+            Yes! I Want to Win Prizes*
+          </a>
+
+          <div className="text-center space-y-3 text-xs sm:text-sm">
+            <p className="text-gray-400">
+              Terms &amp; Conditions Apply. Copyright 2026 Acquisition.com
+            </p>
+            <div className="space-y-2">
+              <p>
+                <a href="#" className="text-blue-400 hover:underline">Affiliate Terms &amp; Conditions*</a>
+                <span className="text-gray-500"> | </span>
+                <a href="#" className="text-blue-400 hover:underline">Giveaway Terms &amp; Conditions</a>
+              </p>
             </div>
-          ))}
+            <p className="text-gray-400">
+              Alex and Leila Hormozi's results are not typical and are not a guarantee of your success. We cannot guarantee that you will make money or that you will be successful if you employ their business strategies specifically or generally. Consequently, your results may significantly vary from theirs. The information contained within this website is the property of Acquisition.com.
+            </p>
+            <div className="pt-4">
+              <img src={logo} alt="EstateKit Logo" className="h-8 mx-auto opacity-60 hover:opacity-100 transition" />
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <div className="mt-12">
+        <FaqVideos />
+      </div>
     </div>
   );
 };

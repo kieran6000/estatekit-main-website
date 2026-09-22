@@ -1,39 +1,19 @@
-import { useEffect } from "react";
-import Cal, { getCalApi } from "@calcom/embed-react";
 import SocialProof from "../components/SocialProof";
 import TestimonialsSection from "../components/TestimonialsSection";
 import ProofScreenshots from "../components/ProofScreenshots";
 import FaqVideos from "../components/FaqVideos";
 import Footer from "../components/Footer";
 import WistiaPlayer from "../components/WistiaPlayer";
+import EventCountdown from "../components/EventCountdown";
 import { FiPlay } from "react-icons/fi";
+import { usePageMeta } from "../hooks/usePageMeta";
+import heroBg from "../../assets/training-hero-bg.webp";
+import logo from "../../assets/primary.svg";
 import {
-  TRAINING_CAL_LINK,
-  TRAINING_CAL_NAMESPACE,
+  TRAINING_BOOKING_EMBED_URL,
   TRAINING_VSL_MEDIA_ID,
   CASE_STUDIES,
 } from "../config/trainingConfig";
-
-const DISCORD_WEBHOOK =
-  "https://discord.com/api/webhooks/1403151508287127582/ReH3dRhqmN2pGoslGMFgIE30aj4xQymtHCMmn3Di4XmdjNpxPL5SlmROkWpM9nwAch64";
-
-const logToDiscord = async (event, data) => {
-  try {
-    const fields = Object.entries(data).map(([name, value]) => ({
-      name,
-      value: String(value ?? "—"),
-      inline: true,
-    }));
-    await fetch(DISCORD_WEBHOOK, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: "training funnel",
-        embeds: [{ title: event, color: 0x0086ff, fields, timestamp: new Date().toISOString() }],
-      }),
-    });
-  } catch (_) {}
-};
 
 function CaseStudyCard({ initials, name, location, stat, detail }) {
   return (
@@ -45,7 +25,9 @@ function CaseStudyCard({ initials, name, location, stat, detail }) {
         <div>
           <p className="font-extrabold text-slate-900 leading-tight">
             {name}
-            {location ? <span className="text-slate-400 font-medium"> · {location}</span> : null}
+            {location ? (
+              <span className="text-slate-400 font-medium"> · {location}</span>
+            ) : null}
           </p>
         </div>
       </div>
@@ -58,165 +40,190 @@ function CaseStudyCard({ initials, name, location, stat, detail }) {
 const Training = () => {
   const isVSLPage = location.pathname.includes("training-vsl");
 
-  useEffect(() => {
-    (async function () {
-      const cal = await getCalApi({ namespace: TRAINING_CAL_NAMESPACE });
-
-      cal("ui", {
-        theme: "light",
-        cssVarsPerTheme: {
-          light: { "cal-brand": "#0086ff" },
-          dark: { "cal-brand": "#0086ff" },
-        },
-        hideEventTypeDetails: true,
-        layout: "month_view",
-      });
-
-      cal("on", {
-        action: "bookingSuccessful",
-        callback: (e) => {
-          const { name, email, startTime } = e.detail.data;
-          logToDiscord("🎓 New Training Registration", {
-            name: name?.substring(0, 20),
-            email: email ? email.substring(0, 3) + "...@" + email.split("@")[1] : "—",
-            time: startTime,
-          });
-        },
-      });
-
-      cal("on", {
-        action: "bookingFailed",
-        callback: (e) => {
-          logToDiscord("❌ Training Registration Failed", {
-            error: e.detail.data.message?.substring(0, 30) + "...",
-          });
-        },
-      });
-    })();
-  }, []);
+  usePageMeta({
+    title:
+      "Free Training: The System That Got Juani 11 Listings in 6 Weeks | EstateKit",
+    description:
+      "Free training for agents already doing 9+ deals a year — the exact seller-attraction system real South African agents are using to book listing appointments without cold calling.",
+    path: isVSLPage ? "/training-vsl" : "/training",
+  });
 
   return (
     <div className="bg-white text-slate-900 antialiased">
-      {/* 1. Announcement bar */}
-      <div className="bg-brand text-white text-center text-lg md:text-xl font-black py-2 px-4 tracking-wide leading-tight">
-        FREE TRAINING — For Agents Already Doing 9+ Deals a Year
-      </div>
-
       {/* 2. Hero — headline + VSL + primary CTA */}
-      <section className="hero-section mx-auto px-4 sm:px-6 pt-8 md:pt-10 pb-4 md:pb-6 text-center">
-        {/* Pre-head */}
-        <p className="text-slate-600 text-base md:text-lg font-medium mb-3 tracking-wide">
-          Stop Cold Calling, Canvassing & Waiting On Referrals...
-        </p>
-
-        {/* Headline */}
-        <h1 className="font-semibold text-3xl sm:text-4xl md:text-5xl leading-tight mb-4 max-w-5xl mx-auto">
-          The Exact System That Got Juani{" "}
-          <span className="text-brand font-black">11 Listings</span> &{" "}
-          <span className="text-brand font-black">1 Closed Deal</span> in Just
-          6 Weeks —{" "}
-          <span className="text-brand underline decoration-brand font-black underline-offset-2">
-            Without a Single Cold Call
-          </span>
-        </h1>
-
-        {/* VSL */}
-        {isVSLPage && (
-          <div className="my-4 md:my-5 max-w-2xl lg:max-w-3xl mx-auto">
-            {TRAINING_VSL_MEDIA_ID ? (
-              <WistiaPlayer mediaId={TRAINING_VSL_MEDIA_ID} />
-            ) : (
-              <div className="aspect-video w-full rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-3 text-slate-400 text-sm text-center px-6">
-                <span className="w-14 h-14 rounded-full bg-white border border-slate-200 flex items-center justify-center">
-                  <FiPlay size={22} />
-                </span>
-                Training preview video loads here
-              </div>
-            )}
+      <section
+        className="relative mx-auto px-4 sm:px-6 pt-5 pb-20 md:pb-22 text-center bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${heroBg})`,
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/45 to-slate-950 backdrop-blur-[3px] pointer-events-none" />
+        <div className="relative">
+          {/* Logo */}
+          <div className="mb-5">
+            <img src={logo} alt="EstateKit Logo" className="h-8 mx-auto" />
           </div>
-        )}
 
-        {/* Primary CTA */}
+          {/* Pre-head */}
+          <div className="bg-white transform scale-110 mx-auto w-fit px-3 sm:px-4 py-2 drop-shadow rounded-full text-xs sm:text-sm md:text-base text-slate-900 my-5 font-black tracking-wide flex items-center justify-center gap-1 flex-wrap max-w-full sm:w-fit">
+            <span className="text-red-500 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
+              <div className="bg-red-500 rounded-full min-w-2 min-h-2 sm:min-w-3 sm:min-h-3"></div>
+              <span>LIVE TRAINING</span>
+            </span>
+            <span className="hidden sm:inline text-slate-400"> </span>
+            <span className="hidden sm:inline text-slate-900">FREE EVENT</span>
+            <span className="inline text-slate-900"> | </span>
+            <span className="whitespace-nowrap text-slate-900">
+              SEP. 10TH, 2026
+            </span>
+          </div>
+
+          <div>
+            {/* Headline */}
+            <h1 className="font-black mb-5 mt-7 md:mt-14 uppercase text-4xl text-white drop-shadow sm:text-5xl md:text-6xl leading-tighter max-w-5xl mx-auto">
+              11 Mandates In 6 Weeks From One Boksburg Agent
+            </h1>
+            <p className="text-white/80 text-lg sm:text-xl md:text-2xl font-normal max-w-3xl mx-auto drop-shadow mt-5">
+              No cold calling. No canvassing. No referrals. Just a seller attraction system
+              running in the background.
+            </p>
+          </div>
+
+          {/* VSL */}
+          {isVSLPage && (
+            <div className="my-4 md:my-5 max-w-2xl lg:max-w-3xl mx-auto">
+              {TRAINING_VSL_MEDIA_ID ? (
+                <WistiaPlayer mediaId={TRAINING_VSL_MEDIA_ID} />
+              ) : (
+                <div className="aspect-video w-full rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-3 text-slate-400 text-sm text-center px-6">
+                  <span className="w-14 h-14 rounded-full bg-white border border-slate-200 flex items-center justify-center">
+                    <FiPlay size={22} />
+                  </span>
+                  Training preview video loads here
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Primary CTA — positioned at bottom edge */}
         <a
           href="#register"
-          className="btn-pulse inline-block w-full sm:w-auto bg-brand text-white font-bold text-base md:text-lg px-8 md:px-12 py-3 md:py-4 rounded mb-2 uppercase tracking-wide"
+          className="absolute left-1/2 -translate-x-1/2 -bottom-10 sm:-bottom-12 md:-bottom-16 inline-block w-11/12 sm:w-auto bg-brand text-white font-bold px-3 sm:px-5 md:px-6 py-4 md:py-5 rounded uppercase tracking-wide hover:shadow-lg transition-shadow z-10"
         >
-          Register For The Free Training
+          <p className="leading-none font-black tracking-normal mb-1.5 text-2xl">
+            CLAIM YOUR FREE PASS TO THE TRAINING
+          </p>
+          <p className="text-xs sm:text-sm md:text-base font-medium leading-none">
+            SEPTEMBER 10TH, 2026 AT 7PM SAST
+          </p>
         </a>
       </section>
 
-      {/* 3. Copy bridge — leads into the calendar */}
-      <div className="max-w-2xl lg:max-w-3xl mx-auto px-4 sm:px-6 pb-2 text-center">
-        <p className="text-slate-900 text-base md:text-lg italic mb-1">
-          "No cold calls, no chasing leads, no wasted budget — just the
-          system other agents in your market are already using..."
-        </p>
-        <p className="text-brand text-base md:text-lg font-bold my-6" id="register">
-          100% Free — Reserve Your Seat Below
-        </p>
-        <p className="text-slate-900 text-base md:text-lg">
-          Register below and I'll expose the entire system — start to
-          finish, no value held back 👇
-        </p>
+      {/* 3. Countdown timer — leads into the calendar */}
+      <div className="pt-14 sm:pt-16 md:pt-20">
+        <EventCountdown />
       </div>
 
-      {/* 4. Cal.com registration embed */}
-      <div>
-        <Cal
-          namespace={TRAINING_CAL_NAMESPACE}
-          calLink={TRAINING_CAL_LINK}
+      {/* 4. EstateKit registration/calendar embed */}
+      <div className="hidden">
+        <iframe
+          src={TRAINING_BOOKING_EMBED_URL}
+          title="EstateKit Free Training — Register"
           style={{
             width: "100%",
-            overflow: "scroll",
-            borderRadius: "10px",
+            minHeight: "820px",
+            border: 0,
+            borderRadius: "16px",
           }}
-          config={{
-            layout: "month_view",
-            theme: "light",
-          }}
+          loading="lazy"
         />
       </div>
 
       {/* 5. Social proof — agent avatars + count */}
       <SocialProof />
 
-      {/* 6. Case studies from the ad */}
-      <section className="max-w-2xl lg:max-w-3xl mx-auto px-4 sm:px-6 pb-10 md:pb-14">
-        <p className="text-center text-slate-900 font-bold text-xl md:text-3xl mb-2">
-          Real Agents. <span className="text-brand">Real Results.</span>
-        </p>
-        <p className="text-center text-slate-500 text-sm md:text-base mb-8 max-w-lg mx-auto">
-          Different cities. Different suburbs. Different price ranges. Same
-          system.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {CASE_STUDIES.map((c) => (
-            <CaseStudyCard key={c.name} {...c} />
-          ))}
-        </div>
-      </section>
+      {/* 6. Testimonials section header */}
+<section className="max-w-4xl mx-auto px-4 sm:px-6 mt-8 pb-6 md:pb-8 text-center">
+  {/* Pill badge */}
+  <div className="md:bg-slate-100 mx-auto w-fit px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm text-slate-900 mb-6 font-black tracking-wide flex items-center justify-center gap-2 flex-wrap max-w-full">
+    <span className="text-amber-400 tracking-wider leading-none text-2xl">
+      ★★★★★
+    </span>
+    <span className="uppercase text-lg">Loved by top-producing SA agents</span>
+  </div>
+
+  {/* Headline */}
+  <h2 className="font-black uppercase max-w-2xl mx-auto xl text-3xl sm:text-4xl md:text-5xl text-slate-900 leading-tight">
+    What <span className="text-brand underline decoration-4 underline-offset-4">Agents</span> Say About This System
+  </h2>
+
+  {/* Subline */}
+  <p className="text-slate-900 font-medium text-lg mt-4">
+    Hear from them below
+  </p>
+</section>
 
       {/* 7. Testimonial videos / audio */}
       <TestimonialsSection />
 
-      {/* 8. Proof screenshots */}
-      <ProofScreenshots />
+      {/* 11. Custom Footer */}
+      <footer className="bg-blue-950 text-white py-5 px-4 sm:px-6 text-center">
+        <div className="max-w-3xl mx-auto">
+          {/* Heading */}
+          <h2 className="text-2xl  font-black mb-5 tracking-wide">
+            Attend Free Seller-Attraction Training
+          </h2>
 
-      {/* 9. FAQ breakout videos */}
-      <FaqVideos />
+          {/* CTA Button */}
+          <a
+            href="#register"
+            className="inline-block w-11/12 mx-auto sm:w-auto bg-brand text-white font-bold px-3 sm:px-5 md:px-6 py-4 md:py-5 rounded uppercase tracking-wide hover:shadow-lg transition-shadow z-10"
+          >
+            <p className="leading-none font-black tracking-normal mb-1.5 text-2xl">
+              CLAIM YOUR FREE PASS TO THE TRAINING
+            </p>
+            <p className="text-xs sm:text-sm md:text-base font-medium leading-none">
+              SEPTEMBER 10TH, 2026 AT 7PM SAST
+            </p>
+          </a>
 
-      {/* 10. Final CTA */}
-      <section className="max-w-2xl lg:max-w-3xl mx-auto px-4 sm:px-6 py-10 md:py-14 text-center">
-        <a
-          href="#register"
-          className="btn-pulse inline-block w-full sm:w-auto bg-brand text-white font-bold text-base md:text-lg px-10 md:px-14 py-3 md:py-4 rounded uppercase tracking-wide mb-2"
-        >
-          Reserve Your Seat Now
-        </a>
-      </section>
+          {/* Disclaimer Section */}
+          <div className="pt-8 text-xs sm:text-sm leading-relaxed text-slate-300 space-y-4">
+            <p>
+              <a
+                href="#"
+                className="text-blue-400 hover:text-blue-300 underline"
+              >
+                Terms & Conditions
+              </a>
+            </p>
+            <p className="text-slate-500">
+              © 2026 EstateKit. All rights reserved.
+            </p>
+            <p>
+              Juani's results are not typical and are not a guarantee of your
+              success. We cannot guarantee that you will make money or that you
+              will be successful if you employ their business strategies
+              specifically or generally. Consequently, your results may
+              significantly vary from theirs. The information contained within
+              this website is the property of EstateKit. Any use of the
+              information, content, or ideas expressed herein without the
+              express written consent of EstateKit is prohibited.
+            </p>
 
-      {/* 11. Footer */}
-      <Footer />
+            {/* Logo */}
+            <div className="pt-4">
+              <img
+                src={logo}
+                alt="EstateKit Logo"
+                className="h-8 sm:h-10 mx-auto opacity-70 hover:opacity-100 transition-opacity"
+              />
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
