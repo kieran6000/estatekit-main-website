@@ -3,6 +3,7 @@ import CopyBridge from "../components/CopyBridge";
 import SocialProof from "../components/SocialProof";
 import TestimonialsSection from "../components/TestimonialsSection";
 import TestimonialProof from "../components/TestimonialProof";
+import TeamStrip from "../components/TeamStrip";
 import QualifyingForm from "../components/QualifyingForm";
 import WistiaPlayer from "../components/WistiaPlayer";
 import Cal from "@calcom/embed-react";
@@ -339,6 +340,9 @@ Book a strategy call below to learn exactly how our Fully Guaranteed Listing Acq
 
       {/* 8. Copy bridge — hands off into the ask */}
       <CopyBridge />
+
+      {/* Faces behind the offer, just above the footer */}
+      <TeamStrip />
 
       {/* 9. Custom Footer */}
       <footer className="bg-blue-950 text-white py-5 px-4 sm:px-6 text-center">

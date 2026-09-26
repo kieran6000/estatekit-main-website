@@ -1,14 +1,6 @@
 import { FiUsers, FiPhone, FiZap } from "react-icons/fi";
-import kieran from "../../../assets/kieran.png";
-import aldredt from "../../../assets/aldredt.jpg";
-import khushil from "../../../assets/khushil.webp";
 import SectionTag from "./SectionTag";
-
-const TEAM = [
-  { name: "Kieran Ouseb", role: "Founder", initials: kieran },
-  { name: "Aldredt Malinga", role: "CTO", initials: aldredt },
-  { name: "Khushil Govind", role: "Client Success", initials: khushil },
-];
+import { TEAM } from "../../config/team";
 
 const PILLARS = [
   {
@@ -46,18 +38,18 @@ export default function Team() {
         </div>
 
         {/* Avatar row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 max-w-xl mx-auto gap-4 mb-12">
-          {TEAM.map((m, i) => (
-            <div key={i} className="text-center">
-              <div
-                className={`w-16 h-16 rounded-full mx-auto mb-2.5 flex items-center justify-center font-extrabold text-base border-2 ${
-                  m.primary
-                    ? "bg-brand text-white border-brand"
-                    : "bg-slate-50 text-brand border-slate-200"
-                }`}
-              >
-                <img className="rounded-full" src={m.initials} alt="" />
-              </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 max-w-2xl mx-auto gap-6 mb-12">
+          {TEAM.map((m) => (
+            <div key={m.name} className="text-center">
+              <img
+                src={m.photo}
+                alt={`${m.name}, ${m.role} at EstateKit`}
+                width="80"
+                height="80"
+                loading="lazy"
+                decoding="async"
+                className="w-20 h-20 rounded-full mx-auto mb-2.5 object-cover border-2 border-slate-200 bg-slate-50"
+              />
               <p className="font-bold text-slate-800 leading-tight">{m.name}</p>
               <p className="text-slate-400 font-medium text-sm mt-0.5">{m.role}</p>
             </div>
