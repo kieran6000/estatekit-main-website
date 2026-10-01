@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://estatekit.co/</loc>
+  </url>
+  <url>
+    <loc>https://estatekit.co/training</loc>
+  </url>
+  <url>
+    <loc>https://estatekit.co/training-vsl</loc>
+  </url>
+  <url>
+    <loc>https://estatekit.co/juani-results</loc>
+  </url>
+  <url>
+    <loc>https://estatekit.co/sakhile-results</loc>
+  </url>
+  <url>
+    <loc>https://estatekit.co/pitch</loc>
+  </url>
+  <url>
+    <loc>https://estatekit.co/pitch-vsl</loc>
+  </url>
+  <url>
+    <loc>https://estatekit.co/pitch/res</loc>
+  </url>
+  <url>
+    <loc>https://estatekit.co/webinar</loc>
+  </url>
+  <url>
+    <loc>https://estatekit.co/results</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>

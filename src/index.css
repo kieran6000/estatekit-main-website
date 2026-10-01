@@ -52,8 +52,40 @@ wistia-player[media-id="ahm5osiwq8"]:not(:defined) {
     opacity: 0.88;
   }
 }
-.btn-pulse {
-  animation: subtle-pulse 2.8s ease-in-out infinite;
+
+@keyframes gentle-cta-wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg) translateY(0px);
+  }
+  15% {
+    transform: rotate(-0.7deg) translateY(-1px);
+  }
+  30% {
+    transform: rotate(0.7deg) translateY(0px);
+  }
+  46% {
+    transform: rotate(-0.35deg) translateY(-1px);
+  }
+  62% {
+    transform: rotate(0.35deg) translateY(0px);
+  }
+  78% {
+    transform: rotate(0deg) translateY(0px);
+  }
+}
+
+.hero-cta,
+.hero-cta-secondary {
+  animation: gentle-cta-wiggle 9s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cta,
+  .hero-cta-secondary {
+    animation: none;
+  }
 }
 
 /* Hero desktop above-the-fold */

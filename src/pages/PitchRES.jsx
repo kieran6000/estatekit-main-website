@@ -5,67 +5,54 @@ import SocialProof from "../components/SocialProof";
 import TestimonialsSection from "../components/TestimonialsSection";
 import ProofScreenshots from "../components/ProofScreenshots";
 import Footer from "../components/Footer";
-import { useEffect, useState } from "react";
 import WistiaPlayer from "../components/WistiaPlayer";
-import Cal, { getCalApi } from "@calcom/embed-react";
+import Cal from "@calcom/embed-react";
+import { useCalBooking } from "../hooks/useCalBooking";
+import { usePageMeta } from "../hooks/usePageMeta";
+import { logToDiscord } from "../lib/discord";
 import logo from "../../assets/secondary.svg";
 import reslogo from "../../assets/RES.png";
-import {
-  FaCross,
-  FaExclamation,
-  FaStop,
-  FaStopCircle,
-  FaTimes,
-} from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 import { FaCircleExclamation } from "react-icons/fa6";
 
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 const PitchRES = () => {
   const isVSLPage = location.pathname.includes("vsl");
+  const calNamespace = isVSLPage ? "10listingappts-vsl" : "10listingappts";
+  const calLink = isVSLPage
+    ? "estatekit/10listingappts-vsl"
+    : "estatekit/10listingappts";
 
-  useEffect(() => {
-    (async function () {
-      const cal = await getCalApi({ namespace: "r7-lead-system" });
+  usePageMeta({
+    title: "For Agents Impacted by the POPI Act | EstateKit",
+    description:
+      "Bennie got 35 seller appointments and 282 leads in 43 days without a single cold call. See the system South African agents are using since the POPI Act made cold calling risky.",
+    path: "/pitch/res",
+  });
 
-      cal("ui", {
-        theme: "light",
-        cssVarsPerTheme: {
-          light: { "cal-brand": "#0086ff" },
-          dark: { "cal-brand": "#0086ff" },
-        },
-        hideEventTypeDetails: true,
-        layout: "month_view",
+  useCalBooking({
+    namespace: calNamespace,
+    onBookingSuccessful: (e) => {
+      const { name, email, startTime } = e.detail.data;
+      const whatsappLink = `https://wa.me/264852878236?text=Hi%20${encodeURIComponent(
+        name.split(" ")[0],
+      )}%20(re:%20${encodeURIComponent(e.detail.data.eventType.title)})`;
+
+      logToDiscord("🎉 New Booking", {
+        name: name.substring(0, 20),
+        email: email.substring(0, 3) + "...@" + email.split("@")[1],
+        time: startTime,
+        type: e.detail.data.eventType.title,
+        whatsapp: `[DM User](${whatsappLink})`,
       });
-
-      cal("on", {
-        action: "bookingSuccessful",
-        callback: (e) => {
-          const { name, email, startTime } = e.detail.data;
-          const whatsappLink = `https://wa.me/264852878236?text=Hi%20${encodeURIComponent(
-            name.split(" ")[0],
-          )}%20(re:%20${encodeURIComponent(e.detail.data.eventType.title)})`;
-
-          logToDiscord("🎉 New Booking", {
-            name: name.substring(0, 20),
-            email: email.substring(0, 3) + "...@" + email.split("@")[1],
-            time: startTime,
-            type: e.detail.data.eventType.title,
-            whatsapp: `[DM User](${whatsappLink})`,
-          });
-        },
+    },
+    onBookingFailed: (e) => {
+      logToDiscord("❌ Booking Failed", {
+        error: e.detail.data.message.substring(0, 30) + "...",
       });
-
-      cal("on", {
-        action: "bookingFailed",
-        callback: (e) => {
-          logToDiscord("❌ Booking Failed", {
-            error: e.detail.data.message.substring(0, 30) + "...",
-          });
-        },
-      });
-    })();
-  }, []);
+    },
+  });
 
   return (
     <div className="bg-white text-slate-900 antialiased">
@@ -130,21 +117,12 @@ const PitchRES = () => {
 
       {/* 4. Cal.com booking embed */}
       <div id="book">
-        {isVSLPage ? (
-          <Cal
-            namespace="10listingappts-vsl"
-            calLink="estatekit/10listingappts-vsl"
-            style={{ width: "100%", overflow: "scroll", borderRadius: "10px" }}
-            config={{ layout: "month_view", theme: "light" }}
-          />
-        ) : (
-          <Cal
-            namespace="10listingappts"
-            calLink="estatekit/10listingappts"
-            style={{ width: "100%", overflow: "scroll", borderRadius: "10px" }}
-            config={{ layout: "month_view", theme: "light" }}
-          />
-        )}
+        <Cal
+          namespace={calNamespace}
+          calLink={calLink}
+          style={{ width: "100%", overflow: "scroll", borderRadius: "10px" }}
+          config={{ layout: "month_view", theme: "light" }}
+        />
       </div>
 
       {/* 5. Social proof — agent avatars + count */}

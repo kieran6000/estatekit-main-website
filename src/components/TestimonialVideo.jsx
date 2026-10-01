@@ -1,21 +1,27 @@
 import WistiaPlayer from './WistiaPlayer'
+import YouTubePlayer from './YouTubePlayer'
 
 /**
  * TestimonialVideo
  *
  * Props:
- *  - type: 'wistia' | 'audio'  (default: 'wistia')
+ *  - type: 'wistia' | 'youtube' | 'audio'  (default: 'wistia')
  *  - mediaId: Wistia media ID (required when type === 'wistia')
+ *  - youtubeId: YouTube video ID (required when type === 'youtube')
  *  - audioSrc: path to audio file (required when type === 'audio')
  *  - name: agent name + location string
  *  - result: result / achievement string
  */
-export default function TestimonialVideo({ type = 'wistia', mediaId, audioSrc, name, result }) {
+export default function TestimonialVideo({ type = 'wistia', mediaId, youtubeId, audioSrc, name, result }) {
   return (
     <div className="mb-10 md:mb-12">
       <div className="video-wrap">
         {type === 'wistia' && mediaId && (
           <WistiaPlayer mediaId={mediaId} />
+        )}
+
+        {type === 'youtube' && youtubeId && (
+          <YouTubePlayer videoId={youtubeId} title={name} />
         )}
 
         {type === 'audio' && audioSrc && (
