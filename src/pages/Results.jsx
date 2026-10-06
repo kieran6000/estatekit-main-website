@@ -5,12 +5,7 @@ import TestimonialImage from "../components/TestimonialImage";
 import { TESTIMONIAL_IMAGES } from "../components/TestimonialProof";
 import { usePageMeta } from "../hooks/usePageMeta";
 import { useJsonLd } from "../hooks/useJsonLd";
-import {
-  VIDEO_TESTIMONIALS,
-  WRITTEN_REVIEWS,
-  PROOF_STATS,
-  ALL_REVIEWS,
-} from "../config/proof";
+import { VIDEO_TESTIMONIALS, PROOF_STATS } from "../config/proof";
 import logo from "../../assets/primary.svg";
 
 const SITE = "https://estatekit.co";
@@ -48,7 +43,7 @@ const Results = () => {
           "@type": "AggregateRating",
           ratingValue: "5",
           bestRating: "5",
-          ratingCount: String(ALL_REVIEWS.length),
+          ratingCount: String(VIDEO_TESTIMONIALS.length),
         },
       },
       {
@@ -72,7 +67,9 @@ const Results = () => {
           ],
         },
       },
-      ...ALL_REVIEWS.map((r) => ({
+      // Only the testimonials actually rendered below — review markup has to
+      // match what a visitor can see, or it reads as spam to Google.
+      ...VIDEO_TESTIMONIALS.map((r) => ({
         "@context": "https://schema.org",
         "@type": "Review",
         itemReviewed: { "@id": `${SITE}/#organization` },
@@ -203,36 +200,6 @@ const Results = () => {
           line="Those leads cost R9–R10 each."
           action="Find out what they'd cost in your area"
         />
-
-        {/* ── Written reviews ──────────────────────────────────────────── */}
-        <section className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
-          <h2 className="mb-10 text-center text-3xl font-black uppercase sm:text-4xl">
-            In their own words
-          </h2>
-
-          <div className="grid gap-5 sm:grid-cols-2">
-            {WRITTEN_REVIEWS.map((r) => (
-              <article
-                key={r.name}
-                className="rounded-lg border border-slate-200 p-6"
-              >
-                <p
-                  className="text-lg leading-none tracking-wider text-amber-400"
-                  aria-label="Rated 5 out of 5"
-                >
-                  ★★★★★
-                </p>
-                <blockquote className="mt-4 text-base italic leading-relaxed text-slate-600">
-                  “{r.quote}”
-                </blockquote>
-                <p className="mt-4 text-sm font-extrabold text-slate-900">
-                  <cite className="not-italic">{r.name}</cite>
-                </p>
-                <p className="text-xs text-slate-400">{r.role}</p>
-              </article>
-            ))}
-          </div>
-        </section>
 
         {/* CTA 3 — the close */}
         <section className="bg-slate-900 px-4 py-16 text-center sm:px-6">
