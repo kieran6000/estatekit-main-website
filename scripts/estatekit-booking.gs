@@ -334,40 +334,74 @@ function createBooking(d) {
   var start = new Date(d.start);
   if (isNaN(start.getTime())) return { ok: false, error: "Bad start time" };
   var end = new Date(start.getTime() + SLOT_MINUTES * 60000);
+  var cal = CalendarApp.getCalendarById(CAL_ID);
+
+  // A reschedule replaces their existing call rather than adding a second
+  // one. Their old slot must not count as busy, or moving by a few minutes
+  // would be refused.
+  var previous = d.rebook ? findUpcomingCalls(cal, d.email) : [];
 
   // The slot list may be up to CACHE_SECONDS stale, so the calendar is the
   // authority at the moment of writing. This is the real double-book guard.
   var busy = collectBusy(
     new Date(start.getTime() - 3600000),
     new Date(end.getTime() + 3600000),
-  );
+  ).filter(function (b) {
+    return !previous.some(function (ev) {
+      return ev.getStartTime().getTime() === b.start &&
+        ev.getEndTime().getTime() === b.end;
+    });
+  });
   if (overlapsBusy(start, end, busy)) {
     CacheService.getScriptCache().remove("slots");
-    return { ok: false, error: "That time was just taken — please pick another." };
+    return { ok: false, error: "That time was just taken. Please pick another." };
   }
 
-  var cal = CalendarApp.getCalendarById(CAL_ID);
-  var event = cal.createEvent(
-    "EstateKit Discovery Call — " + (d.name || "Lead"),
-    start,
-    end,
-    {
-      description: [
+  // The rebook page never re-asks the questions, so keep the answers from
+  // the call being replaced.
+  var description = previous.length && !d.q1
+    ? previous[0].getDescription()
+    : [
         "Name: " + (d.name || ""),
         "Phone: " + (d.phone || ""),
         "Email: " + (d.email || ""),
         "PPRA: " + (d.q1 || ""),
         "Transactions (6mo): " + (d.q2 || ""),
         "Score: " + (d.score == null ? "" : d.score),
-      ].join("\n"),
+      ].join("\n");
+
+  var event = cal.createEvent(
+    "EstateKit Discovery Call — " + (d.name || "Lead"),
+    start,
+    end,
+    {
+      description: description,
       guests: d.email || "",
       sendInvites: true,
     },
   );
 
+  // Only once the new call exists, so a failed write never leaves them with
+  // no call at all.
+  for (var i = 0; i < previous.length; i++) previous[i].deleteEvent();
+
   CacheService.getScriptCache().remove("slots");
 
   // No row is written here. The site posts the lead to the dashboard, which
   // owns the record and every follow-up that comes off it.
-  return { ok: true, eventId: event.getId() };
+  return { ok: true, eventId: event.getId(), replaced: previous.length };
+}
+
+/** Discovery calls still ahead of us that this email is invited to. */
+function findUpcomingCalls(cal, email) {
+  var who = String(email || "").trim().toLowerCase();
+  if (!who) return [];
+  var now = new Date();
+  var later = new Date(now.getTime() + 90 * 86400000);
+  return cal.getEvents(now, later).filter(function (ev) {
+    if (ev.getTitle().indexOf("EstateKit Discovery Call") !== 0) return false;
+    return ev.getGuestList().some(function (g) {
+      return g.getEmail().toLowerCase() === who;
+    });
+  });
 }

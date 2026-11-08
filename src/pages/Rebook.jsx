@@ -33,7 +33,7 @@ const Rebook = () => {
   }, []);
 
   const handleBooked = useCallback(({ start, form }) => {
-    postActivity("booked", {
+    const card = postActivity("booked", {
       who: form.fullName.trim() || "Rebooked lead",
       fields: {
         When: new Date(start).toLocaleString(undefined, {
@@ -52,12 +52,17 @@ const Rebook = () => {
 
     // Matches the existing dashboard row on phone number, so moving a time
     // updates the lead rather than creating a duplicate card.
-    submitFunnelLead({
+    const lead = submitFunnelLead({
       name: form.fullName.trim(),
       phone: form.phone.trim(),
       email: form.email.trim(),
       startsAt: new Date(start).toISOString(),
+      keepalive: true,
     });
+
+    // Returned so the widget waits for both before it redirects; otherwise
+    // the new time reaches the calendar but dies on its way to the dashboard.
+    return Promise.all([card, lead]);
   }, []);
 
   usePageMeta({

@@ -12,6 +12,7 @@ import JuaniResults from "./pages/JuaniResults";
 import SakhileResults from "./pages/SakhileResults";
 import Results from "./pages/Results";
 import Rebook from "./pages/Rebook";
+import RebookLink from "./pages/RebookLink";
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/results" element={<Results />} />
         <Route path="/thank-you" element={<Thanks />} />
         <Route path="/rebook" element={<Rebook />} />
+        <Route path="/rebook/link" element={<RebookLink />} />
         <Route path="/training" element={<Training />} />
         <Route path="/training-vsl" element={<Training />} />
         <Route path="/training/thank-you" element={<TrainingThanks />} />

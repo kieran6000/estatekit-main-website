@@ -21,6 +21,9 @@ export default function PageActivity() {
   const seen = useRef(new Set());
 
   useEffect(() => {
+    // Internal tool, not a visitor.
+    if (pathname === "/rebook/link") return;
+
     try {
       window.fbq?.("track", "PageView");
     } catch {
