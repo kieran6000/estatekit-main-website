@@ -34,6 +34,9 @@ const RebookLink = () => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [copied, setCopied] = useState("");
+  const [leadRef, setLeadRef] = useState("");
+
+  const leadId = (leadRef.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i) || [])[0] || "";
 
   usePageMeta({
     title: "Reschedule link | EstateKit",
@@ -46,16 +49,18 @@ const RebookLink = () => {
   const first = name.trim().split(/\s+/)[0] || "";
 
   const link = useMemo(() => {
+    // The short link pulls their details from the dashboard itself.
+    if (leadId) return `${SITE}/r/${leadId}`;
     const q = new URLSearchParams();
     if (name.trim()) q.set("name", name.trim());
     if (email.trim()) q.set("email", email.trim());
     if (digits) q.set("phone", `+${digits}`);
     return `${SITE}/rebook?${q}`;
-  }, [name, email, digits]);
+  }, [leadId, name, email, digits]);
 
   const message = `Hi ${first || "there"}, no stress if your time doesn't work anymore. Pick a new one here and you'll get a fresh invite: ${link}`;
 
-  const ready = Boolean(name.trim() && digits && email.trim());
+  const ready = Boolean(leadId || (name.trim() && digits && email.trim()));
 
   const copy = async (what, text) => {
     try {
@@ -85,14 +90,35 @@ const RebookLink = () => {
           Reschedule link
         </h1>
         <p className="mt-2 text-center text-sm text-slate-600">
-          Fill in the lead, or paste a calendar event's details into any box.
-          They land straight on the calendar with everything filled in.
+          Paste the lead's dashboard link and their original details fill in
+          by themselves. They land straight on the calendar.
         </p>
 
+        <div className="mt-6 space-y-3 rounded-xl border border-[#e5e7eb] bg-white p-5">
+          <label className="block text-sm font-medium">
+            Dashboard lead link or id
+            <input
+              className={`${field} mt-1`}
+              value={leadRef}
+              onChange={(e) => setLeadRef(e.target.value)}
+              placeholder="https://leads.estatekit.co/…"
+            />
+          </label>
+          {leadRef && !leadId && (
+            <p className="text-xs text-red-600">No lead id in that. Copy the link from the lead's page.</p>
+          )}
+          <p className="text-xs text-slate-500">
+            Their name and number are only needed below for the WhatsApp button.
+          </p>
+        </div>
+
         <div
-          className="mt-6 space-y-3 rounded-xl border border-[#e5e7eb] bg-white p-5"
+          className="mt-3 space-y-3 rounded-xl border border-[#e5e7eb] bg-white p-5"
           onPaste={onPaste}
         >
+          <p className="text-xs font-semibold uppercase text-slate-500">
+            {leadId ? "For the WhatsApp message (optional)" : "No dashboard link? Fill these in, or paste a calendar event"}
+          </p>
           <label className="block text-sm font-medium">
             Name
             <input className={`${field} mt-1`} value={name} onChange={(e) => setName(e.target.value)} />
@@ -132,14 +158,16 @@ const RebookLink = () => {
                 {copied === "msg" ? "Copied" : "Copy message"}
               </button>
             </div>
-            <a
-              href={`https://wa.me/${digits}?text=${encodeURIComponent(message)}`}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-center gap-2 rounded-lg bg-[#25D366] px-3 py-2.5 text-sm font-bold text-white"
-            >
-              <FaWhatsapp className="text-lg" /> Send on WhatsApp
-            </a>
+            {digits && (
+              <a
+                href={`https://wa.me/${digits}?text=${encodeURIComponent(message)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2 rounded-lg bg-[#25D366] px-3 py-2.5 text-sm font-bold text-white"
+              >
+                <FaWhatsapp className="text-lg" /> Send on WhatsApp
+              </a>
+            )}
             <a
               href={link}
               target="_blank"

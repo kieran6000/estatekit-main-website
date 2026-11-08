@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/r/:id",
+      "destination": "https://yfcnsvrhojpysrzqrkdi.supabase.co/functions/v1/video-click?l=:id&to=rebook",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

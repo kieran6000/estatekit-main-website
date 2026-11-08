@@ -9,6 +9,7 @@ import {
 } from "../../config/qualifyingQuestions";
 import { createBooking, fetchSlots, timeLabel } from "../../lib/bookingApi";
 import { submitFunnelLead, toFormAnswers } from "../../lib/dashboard";
+import { rememberLead } from "../../lib/rememberedLead";
 
 const INK = "rgb(31, 42, 55)";
 const MUTED = "rgba(31, 42, 55, 0.733)";
@@ -287,6 +288,11 @@ export default function ApplicationWidget({
       // written to the "Not booked" tab.
       exitSent.current = true;
       setBooking({ busy: false, error: null, done: result });
+      rememberLead({
+        name: form.fullName.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+      });
       // Awaited, not fired and forgotten. The redirect below tears the page
       // down, and an in-flight request dies with it — which is exactly why
       // bookings were reaching the calendar but never the dashboard.

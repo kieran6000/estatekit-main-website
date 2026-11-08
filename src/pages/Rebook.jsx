@@ -3,6 +3,7 @@ import ApplicationWidget from "../components/booking/ApplicationWidget";
 import { usePageMeta } from "../hooks/usePageMeta";
 import { postActivity } from "../lib/discordCards";
 import { submitFunnelLead } from "../lib/dashboard";
+import { recallLead } from "../lib/rememberedLead";
 import logo from "../../assets/primary.svg";
 
 /**
@@ -12,23 +13,24 @@ import logo from "../../assets/primary.svg";
  * back through the pitch page and the questions to move a time. This is the
  * calendar and nothing else.
  *
- * Their details arrive as query params so there is no form at all:
- *   /rebook?name=Thabo%20M&email=t@x.co&phone=%2B27831234567
- *
- * With no params it still works, it just books under "there" with a blank
- * email, so links we send always carry them.
+ * Send leads estatekit.co/r/<lead id>: it looks them up and lands here with
+ * their original details as query params, so there is no form at all.
  */
 const Rebook = () => {
   const lead = useMemo(() => {
     const q = new URLSearchParams(window.location.search);
-    const full = (q.get("name") || "").trim();
+    // A personal link (estatekit.co/r/<lead id>) arrives with their details
+    // in the URL. A bare /rebook falls back to what this device saved when
+    // they first booked.
+    const saved = q.get("name") ? null : recallLead();
+    const full = (q.get("name") || saved?.name || "").trim();
     const [firstName, ...rest] = full.split(/\s+/);
 
     return {
       firstName: firstName || "",
       lastName: rest.join(" "),
-      email: (q.get("email") || "").trim(),
-      phone: (q.get("phone") || "").trim(),
+      email: (q.get("email") || saved?.email || "").trim(),
+      phone: (q.get("phone") || saved?.phone || "").trim(),
     };
   }, []);
 
@@ -88,7 +90,9 @@ const Rebook = () => {
 
       <ApplicationWidget
         title="EstateKit Discovery Call"
-        rebookFor={lead}
+        // Nobody to prefill: ask for their details rather than booking a
+        // blank call nobody can match to a lead.
+        rebookFor={lead.firstName || lead.phone ? lead : null}
         onBook={handleBooked}
       />
 
