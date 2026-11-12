@@ -67,6 +67,8 @@ function Article({ meta }) {
     description: meta.description,
     path,
     type: "article",
+    // Social cards need a real raster image; an inlined SVG chart won't do.
+    image: meta.image?.startsWith("/") && !meta.image.endsWith(".svg") ? `${SITE_URL}${meta.image}` : undefined,
   });
 
   const schema = useMemo(
@@ -78,6 +80,7 @@ function Article({ meta }) {
           "@id": `${url}#article`,
           headline: meta.title,
           description: meta.description,
+          ...(meta.image?.startsWith("/") ? { image: `${SITE_URL}${meta.image}` } : {}),
           datePublished: meta.publishedDate,
           dateModified: meta.updatedDate,
           mainEntityOfPage: url,
@@ -142,6 +145,17 @@ function Article({ meta }) {
           <span aria-hidden="true"> · </span>
           Last updated <time dateTime={meta.updatedDate}>{formatDate(meta.updatedDate)}</time>
         </p>
+
+        {meta.image ? (
+          <img
+            src={meta.image}
+            alt={meta.imageAlt}
+            width={meta.imageWidth}
+            height={meta.imageHeight}
+            fetchpriority="high"
+            className="mt-8 h-auto w-full rounded-xl border border-slate-200 bg-slate-50"
+          />
+        ) : null}
 
         <aside aria-label="Short answer" className="mt-8 border-l-4 border-brand bg-slate-50 px-5 py-4">
           <p className="text-xs font-black uppercase tracking-widest text-brand">Short answer</p>

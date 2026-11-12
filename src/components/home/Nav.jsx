@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { FiMenu, FiX, FiArrowRight } from "react-icons/fi";
 import logo from "../../../assets/secondary.svg";
 import { NAV_LINKS } from "./navLinks";
@@ -24,6 +25,13 @@ function MobileMenu({ open, onClose }) {
             {l}
           </a>
         ))}
+        <Link
+          to="/resources"
+          onClick={onClose}
+          className="block py-5 border-b border-slate-100 font-bold text-base text-slate-800"
+        >
+          Guides
+        </Link>
         <div className="mt-7">
           <button className="w-full bg-brand text-white font-bold text-sm rounded-lg py-4 flex items-center justify-center gap-2">
             Book Discovery Call <FiArrowRight size={15} />
@@ -65,6 +73,12 @@ export default function Nav() {
                 {l}
               </a>
             ))}
+            <Link
+              to="/resources"
+              className="text-black hover:text-brand text-sm font-semibold transition-colors"
+            >
+              Guides
+            </Link>
             <a
               href="#contact"
               className="bg-brand hover:bg-blue-700 text-white font-bold text-sm px-5 py-2.5 rounded transition-colors"

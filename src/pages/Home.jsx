@@ -13,6 +13,8 @@ import Guarantee from "../components/home/Guarantee";
 import Faq from "../components/home/Faq";
 import Booking from "../components/home/Booking";
 import HomeFooter from "../components/home/HomeFooter";
+import Areas from "../components/home/Areas";
+import Guides from "../components/home/Guides";
 
 export default function Home() {
   usePageMeta({
@@ -33,9 +35,11 @@ export default function Home() {
       <Stats />
       <TestimonialsGrid />
       <VideoResults />
+      <Areas />
       <Guarantee />
       <Faq />
       <Booking />
+      <Guides />
       <HomeFooter />
     </div>
   );

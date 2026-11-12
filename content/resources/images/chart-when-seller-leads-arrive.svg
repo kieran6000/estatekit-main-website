@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="412" viewBox="0 0 760 412" font-family="Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif" role="img" aria-label="When seller leads come in">
+<rect width="760" height="412" fill="#ffffff"/>
+<text x="24" y="40" font-size="21" font-weight="700" fill="#0f172a">When seller leads come in</text>
+<text x="24" y="66" font-size="14" fill="#475569">Time of day each lead filled in the form, South African time</text>
+<line x1="204" y1="84" x2="204" y2="352" stroke="#e2e8f0" stroke-width="1"/>
+<text x="190" y="109" font-size="14" fill="#0f172a" text-anchor="end">Midnight to 6am</text>
+<path d="M204 92h143.89915966386556a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-143.89915966386556z" fill="#b8dcff"/>
+<text x="359.8991596638656" y="109" font-size="14" font-weight="600" fill="#0f172a">7%</text>
+<text x="190" y="147" font-size="14" fill="#0f172a" text-anchor="end">6am to 9am</text>
+<path d="M204 130h249.22128851540617a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-249.22128851540617z" fill="#b8dcff"/>
+<text x="465.2212885154062" y="147" font-size="14" font-weight="600" fill="#0f172a">12%</text>
+<text x="190" y="185" font-size="14" fill="#0f172a" text-anchor="end">9am to noon</text>
+<path d="M204 168h315.327731092437a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-315.327731092437z" fill="#b8dcff"/>
+<text x="531.327731092437" y="185" font-size="14" font-weight="600" fill="#0f172a">16%</text>
+<text x="190" y="223" font-size="14" fill="#0f172a" text-anchor="end">Noon to 3pm</text>
+<path d="M204 206h344.4593837535014a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-344.4593837535014z" fill="#b8dcff"/>
+<text x="560.4593837535015" y="223" font-size="14" font-weight="600" fill="#0f172a">17%</text>
+<text x="190" y="261" font-size="14" fill="#0f172a" text-anchor="end">3pm to 6pm</text>
+<path d="M204 244h326.5322128851541a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-326.5322128851541z" fill="#b8dcff"/>
+<text x="542.5322128851541" y="261" font-size="14" font-weight="600" fill="#0f172a">16%</text>
+<text x="190" y="299" font-size="14" fill="#0f172a" text-anchor="end">6pm to 9pm</text>
+<path d="M204 282h396a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-396z" fill="#0086ff"/>
+<text x="612" y="299" font-size="14" font-weight="600" fill="#0f172a">20%</text>
+<text x="190" y="337" font-size="14" fill="#0f172a" text-anchor="end">9pm to midnight</text>
+<path d="M204 320h245.85994397759103a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-245.85994397759103z" fill="#b8dcff"/>
+<text x="461.859943977591" y="337" font-size="14" font-weight="600" fill="#0f172a">12%</text>
+<text x="24" y="392" font-size="12" fill="#94a3b8">Source: EstateKit dashboard, 1,829 seller leads, June to November 2026</text>
+<text x="736" y="392" font-size="12" font-weight="700" fill="#94a3b8" text-anchor="end">estatekit.co</text>
+</svg>

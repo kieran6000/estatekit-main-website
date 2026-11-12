@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="412" viewBox="0 0 760 412" font-family="Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif" role="img" aria-label="Who wants to sell soonest">
+<rect width="760" height="412" fill="#ffffff"/>
+<text x="24" y="40" font-size="21" font-weight="700" fill="#0f172a">Who wants to sell soonest</text>
+<text x="24" y="66" font-size="14" fill="#475569">Share planning to sell within 3 months, by reason for selling</text>
+<line x1="204" y1="84" x2="204" y2="352" stroke="#e2e8f0" stroke-width="1"/>
+<text x="190" y="109" font-size="14" fill="#0f172a" text-anchor="end">Relocating</text>
+<path d="M204 92h318.4a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-318.4z" fill="#0086ff"/>
+<text x="534.4" y="109" font-size="14" font-weight="600" fill="#0f172a">40%</text>
+<text x="565.6" y="109" font-size="13" fill="#94a3b8">of 273</text>
+<text x="190" y="147" font-size="14" fill="#0f172a" text-anchor="end">Financial reasons</text>
+<path d="M204 130h311.2a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-311.2z" fill="#0086ff"/>
+<text x="527.2" y="147" font-size="14" font-weight="600" fill="#0f172a">39%</text>
+<text x="558.4000000000001" y="147" font-size="13" fill="#94a3b8">of 94</text>
+<text x="190" y="185" font-size="14" fill="#0f172a" text-anchor="end">Inherited property</text>
+<path d="M204 168h222.4a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-222.4z" fill="#b8dcff"/>
+<text x="438.4" y="185" font-size="14" font-weight="600" fill="#0f172a">28%</text>
+<text x="469.59999999999997" y="185" font-size="13" fill="#94a3b8">of 46</text>
+<text x="190" y="223" font-size="14" fill="#0f172a" text-anchor="end">Retirement</text>
+<path d="M204 206h216a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-216z" fill="#b8dcff"/>
+<text x="432" y="223" font-size="14" font-weight="600" fill="#0f172a">28%</text>
+<text x="463.2" y="223" font-size="13" fill="#94a3b8">of 80</text>
+<text x="190" y="261" font-size="14" fill="#0f172a" text-anchor="end">Upgrading</text>
+<path d="M204 244h188.8a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-188.8z" fill="#b8dcff"/>
+<text x="404.8" y="261" font-size="14" font-weight="600" fill="#0f172a">24%</text>
+<text x="436" y="261" font-size="13" fill="#94a3b8">of 145</text>
+<text x="190" y="299" font-size="14" fill="#0f172a" text-anchor="end">Downsizing</text>
+<path d="M204 282h178.4a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-178.4z" fill="#b8dcff"/>
+<text x="394.4" y="299" font-size="14" font-weight="600" fill="#0f172a">23%</text>
+<text x="425.59999999999997" y="299" font-size="13" fill="#94a3b8">of 232</text>
+<text x="190" y="337" font-size="14" fill="#0f172a" text-anchor="end">Just curious</text>
+<path d="M204 320h149.6a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-149.6z" fill="#b8dcff"/>
+<text x="365.6" y="337" font-size="14" font-weight="600" fill="#0f172a">19%</text>
+<text x="396.8" y="337" font-size="13" fill="#94a3b8">of 52</text>
+<text x="24" y="392" font-size="12" fill="#94a3b8">Source: EstateKit dashboard, seller leads who answered both questions</text>
+<text x="736" y="392" font-size="12" font-weight="700" fill="#94a3b8" text-anchor="end">estatekit.co</text>
+</svg>

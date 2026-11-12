@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="450" viewBox="0 0 760 450" font-family="Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif" role="img" aria-label="What a seller lead cost, by area">
+<rect width="760" height="450" fill="#ffffff"/>
+<text x="24" y="40" font-size="21" font-weight="700" fill="#0f172a">What a seller lead cost, by area</text>
+<text x="24" y="66" font-size="14" fill="#475569">Cost per lead on Facebook and Instagram, seller campaigns, June to November 2026</text>
+<line x1="204" y1="84" x2="204" y2="390" stroke="#e2e8f0" stroke-width="1"/>
+<text x="190" y="109" font-size="14" fill="#0f172a" text-anchor="end">All 7 areas</text>
+<path d="M204 92h97.56521739130434a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-97.56521739130434z" fill="#0086ff"/>
+<text x="313.5652173913044" y="109" font-size="14" font-weight="600" fill="#0f172a">R11.68</text>
+<text x="369.96521739130435" y="109" font-size="13" fill="#94a3b8">3,379 leads</text>
+<text x="190" y="147" font-size="14" fill="#0f172a" text-anchor="end">Durban</text>
+<path d="M204 130h40.52173913043478a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-40.52173913043478z" fill="#b8dcff"/>
+<text x="256.52173913043475" y="147" font-size="14" font-weight="600" fill="#0f172a">R5.12</text>
+<text x="304.52173913043475" y="147" font-size="13" fill="#94a3b8">1,273 leads</text>
+<text x="190" y="185" font-size="14" fill="#0f172a" text-anchor="end">Pietermaritzburg</text>
+<path d="M204 168h54.95652173913044a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-54.95652173913044z" fill="#b8dcff"/>
+<text x="270.95652173913044" y="185" font-size="14" font-weight="600" fill="#0f172a">R6.78</text>
+<text x="318.95652173913044" y="185" font-size="13" fill="#94a3b8">196 leads</text>
+<text x="190" y="223" font-size="14" fill="#0f172a" text-anchor="end">Pretoria</text>
+<path d="M204 206h88.78260869565217a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-88.78260869565217z" fill="#b8dcff"/>
+<text x="304.7826086956522" y="223" font-size="14" font-weight="600" fill="#0f172a">R10.67</text>
+<text x="361.1826086956522" y="223" font-size="13" fill="#94a3b8">449 leads</text>
+<text x="190" y="261" font-size="14" fill="#0f172a" text-anchor="end">Boksburg</text>
+<path d="M204 244h109.04347826086956a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-109.04347826086956z" fill="#b8dcff"/>
+<text x="325.04347826086956" y="261" font-size="14" font-weight="600" fill="#0f172a">R13.00</text>
+<text x="381.4434782608696" y="261" font-size="13" fill="#94a3b8">687 leads</text>
+<text x="190" y="299" font-size="14" fill="#0f172a" text-anchor="end">Cape Town</text>
+<path d="M204 282h150.69565217391303a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-150.69565217391303z" fill="#b8dcff"/>
+<text x="366.695652173913" y="299" font-size="14" font-weight="600" fill="#0f172a">R17.79</text>
+<text x="423.095652173913" y="299" font-size="13" fill="#94a3b8">471 leads</text>
+<text x="190" y="337" font-size="14" fill="#0f172a" text-anchor="end">Centurion</text>
+<path d="M204 320h166.3478260869565a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-166.3478260869565z" fill="#b8dcff"/>
+<text x="382.3478260869565" y="337" font-size="14" font-weight="600" fill="#0f172a">R19.59</text>
+<text x="438.7478260869565" y="337" font-size="13" fill="#94a3b8">117 leads</text>
+<text x="190" y="375" font-size="14" fill="#0f172a" text-anchor="end">Midrand</text>
+<path d="M204 358h334.0869565217391a4 4 0 0 1 4 4v16a4 4 0 0 1 -4 4h-334.0869565217391z" fill="#b8dcff"/>
+<text x="550.0869565217391" y="375" font-size="14" font-weight="600" fill="#0f172a">R38.88</text>
+<text x="606.4869565217391" y="375" font-size="13" fill="#94a3b8">186 leads</text>
+<text x="24" y="430" font-size="12" fill="#94a3b8">Source: EstateKit client ad accounts, 3,379 seller leads</text>
+<text x="736" y="430" font-size="12" font-weight="700" fill="#94a3b8" text-anchor="end">estatekit.co</text>
+</svg>
