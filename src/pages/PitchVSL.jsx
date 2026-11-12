@@ -150,7 +150,9 @@ const PitchVSL = () => {
     title: "Guaranteed Closed Deals or Your Money Back | EstateKit",
     description:
       "A proven system that delivers real listing appointments and closed deals for real estate agents — guaranteed, or your money back.",
-    path: isVSLPage ? "/pitch-vsl" : "/pitch",
+    // /pitch-vsl is /pitch plus the video, kept live for ad funnels. One
+    // canonical so search engines index a single page.
+    path: "/pitch",
   });
 
   return (

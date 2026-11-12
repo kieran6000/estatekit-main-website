@@ -1,9 +1,11 @@
 /**
  * Routes that are built to static HTML (see scripts/prerender.mjs).
  *
- * These are the indexable pages, the same list as public/sitemap.xml. The
- * resources index and every article are added on top by entry-server.jsx,
- * straight from content/resources, so a new guide never needs listing here.
+ * These are the public pages: everything in public/sitemap.xml plus
+ * /pitch-vsl and /training-vsl, which are live for ad funnels but
+ * canonicalise to /pitch and /training. The resources index and every
+ * article are added on top by entry-server.jsx, straight from
+ * content/resources, so a new guide never needs listing here.
  *
  * Deliberately missing: /thank-you, /training/thank-you, /rebook and
  * /rebook/link. They are noindex, read the visitor's own query string, and
