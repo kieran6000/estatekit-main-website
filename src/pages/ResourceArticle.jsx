@@ -1,15 +1,17 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import ResourceLayout, { BookCallCta } from "../components/resources/ResourceLayout";
+import ResourceLayout, { ArticleCta } from "../components/resources/ResourceLayout";
+import WistiaPlayer from "../components/WistiaPlayer";
 import NotFound from "./NotFound";
 import { usePageMeta, SITE_URL } from "../hooks/usePageMeta";
 import { useJsonLd } from "../hooks/useJsonLd";
-import { ARTICLES, findArticle, formatDate } from "../lib/resources";
-import { AUTHOR } from "../config/schema";
+import { ARTICLES, findArticle, formatDate, getLoadedArticle, loadArticle } from "../lib/resources";
+import { AUTHOR, AUTHOR_REF } from "../config/schema";
 
 /**
  * Typography for the Markdown body, kept here rather than in a plugin so
- * the guides look like the rest of the site and nothing else.
+ * the guides look like the rest of the site and nothing else. The boxes
+ * (:::mistakes, :::proof) and tables are styled in index.css.
  */
 const PROSE = [
   "text-[17px] leading-relaxed text-slate-700",
@@ -20,64 +22,89 @@ const PROSE = [
   "[&_strong]:text-slate-900",
 ].join(" ");
 
+const LINK = "font-semibold text-brand underline underline-offset-2";
+
 export default function ResourceArticle() {
   const { slug } = useParams();
-  const article = findArticle(slug);
-  return article ? <Article article={article} /> : <NotFound />;
+  const meta = findArticle(slug);
+  // Keyed so moving between guides starts each one fresh.
+  return meta ? <Article key={meta.slug} meta={meta} /> : <NotFound />;
 }
 
-function Article({ article }) {
+/**
+ * The full text is its own file (see lib/resources.js). A prerendered visit
+ * has it before React starts, so this renders complete the first time. A
+ * click from another page shows the title and short answer straight away,
+ * and the rest a moment later.
+ */
+function useFullArticle(slug) {
+  const [article, setArticle] = useState(() => getLoadedArticle(slug));
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    if (article) return;
+    let live = true;
+    loadArticle(slug).then(
+      (a) => live && setArticle(a),
+      () => live && setFailed(true),
+    );
+    return () => {
+      live = false;
+    };
+  }, [article, slug]);
+
+  return { article, failed };
+}
+
+function Article({ meta }) {
   const navigate = useNavigate();
-  const path = `/resources/${article.slug}`;
+  const { article, failed } = useFullArticle(meta.slug);
+  const path = `/resources/${meta.slug}`;
   const url = `${SITE_URL}${path}`;
 
   usePageMeta({
-    title: `${article.title} | EstateKit`,
-    description: article.description,
+    title: `${meta.title} | EstateKit`,
+    description: meta.description,
     path,
     type: "article",
   });
 
   const schema = useMemo(
-    () => [
-      {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "@id": `${url}#article`,
-        headline: article.title,
-        description: article.description,
-        datePublished: article.publishedDate,
-        dateModified: article.updatedDate,
-        mainEntityOfPage: url,
-        author: {
-          "@type": "Person",
-          name: AUTHOR.name,
-          jobTitle: AUTHOR.role,
-          worksFor: { "@id": `${SITE_URL}/#organization` },
+    () =>
+      article && [
+        {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "@id": `${url}#article`,
+          headline: meta.title,
+          description: meta.description,
+          datePublished: meta.publishedDate,
+          dateModified: meta.updatedDate,
+          mainEntityOfPage: url,
+          author: { ...AUTHOR_REF, jobTitle: AUTHOR.role },
+          publisher: { "@id": `${SITE_URL}/#organization` },
         },
-        publisher: { "@id": `${SITE_URL}/#organization` },
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "@id": `${url}#faq`,
-        mainEntity: article.faq.map((f) => ({
-          "@type": "Question",
-          name: f.question,
-          acceptedAnswer: { "@type": "Answer", text: f.answerText },
-        })),
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
-          { "@type": "ListItem", position: 2, name: "Resources", item: `${SITE_URL}/resources` },
-          { "@type": "ListItem", position: 3, name: article.title, item: url },
-        ],
-      },
-    ],
-    [article, url],
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "@id": `${url}#faq`,
+          mainEntity: article.faq.map((f) => ({
+            "@type": "Question",
+            name: f.question,
+            acceptedAnswer: { "@type": "Answer", text: f.answerText },
+          })),
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+            { "@type": "ListItem", position: 2, name: "Resources", item: `${SITE_URL}/resources` },
+            { "@type": "ListItem", position: 3, name: meta.title, item: url },
+          ],
+        },
+      ],
+    [article, meta, url],
   );
   useJsonLd(schema, "ek-page-jsonld");
 
@@ -95,7 +122,7 @@ function Article({ article }) {
     [navigate],
   );
 
-  const more = ARTICLES.filter((a) => a.slug !== article.slug).slice(0, 3);
+  const more = ARTICLES.filter((a) => a.slug !== meta.slug).slice(0, 3);
 
   return (
     <ResourceLayout>
@@ -104,52 +131,85 @@ function Article({ article }) {
           <Link to="/resources" className="hover:text-brand">Resources</Link>
         </nav>
 
-        <h1 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">{article.title}</h1>
+        <h1 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">{meta.title}</h1>
 
         <p className="mt-4 text-sm text-slate-500">
-          By <span className="font-semibold text-slate-700">{AUTHOR.name}</span>, founder of EstateKit
+          By{" "}
+          <Link to={AUTHOR.path} rel="author" className="font-semibold text-slate-700 hover:text-brand">
+            {AUTHOR.name}
+          </Link>
+          , founder of EstateKit
           <span aria-hidden="true"> · </span>
-          Last updated <time dateTime={article.updatedDate}>{formatDate(article.updatedDate)}</time>
+          Last updated <time dateTime={meta.updatedDate}>{formatDate(meta.updatedDate)}</time>
         </p>
 
         <aside aria-label="Short answer" className="mt-8 border-l-4 border-brand bg-slate-50 px-5 py-4">
           <p className="text-xs font-black uppercase tracking-widest text-brand">Short answer</p>
-          <p className="mt-2 text-[17px] leading-relaxed text-slate-800">{article.shortAnswer}</p>
+          <p className="mt-2 text-[17px] leading-relaxed text-slate-800">{meta.shortAnswer}</p>
         </aside>
 
-        <div className={`mt-8 ${PROSE}`} onClick={onBodyClick} dangerouslySetInnerHTML={{ __html: article.html }} />
-
-        <section aria-labelledby="faq" className="mt-12 border-t border-slate-100 pt-8">
-          <h2 id="faq" className="text-2xl font-bold">Frequently asked questions</h2>
-          {article.faq.map((f) => (
-            <div key={f.question} className="mt-6">
-              <h3 className="text-lg font-bold text-slate-900">{f.question}</h3>
-              <div
-                className={PROSE}
-                onClick={onBodyClick}
-                dangerouslySetInnerHTML={{ __html: f.answerHtml }}
-              />
+        {article ? (
+          <>
+            <div className="mt-8">
+              {article.body.map((part, i) =>
+                part.video ? (
+                  <figure key={i} className="my-8">
+                    <WistiaPlayer mediaId={part.video} />
+                    {part.caption ? (
+                      <figcaption className="mt-2 text-sm text-slate-500">{part.caption}</figcaption>
+                    ) : null}
+                  </figure>
+                ) : (
+                  <div
+                    key={i}
+                    className={`ek-article ${PROSE}`}
+                    onClick={onBodyClick}
+                    dangerouslySetInnerHTML={{ __html: part.html }}
+                  />
+                ),
+              )}
             </div>
-          ))}
-        </section>
+
+            <section aria-labelledby="faq" className="mt-12 border-t border-slate-100 pt-8">
+              <h2 id="faq" className="text-2xl font-bold">Frequently asked questions</h2>
+              {article.faq.map((f) => (
+                <div key={f.question} className="mt-6">
+                  <h3 className="text-lg font-bold text-slate-900">{f.question}</h3>
+                  <div
+                    className={`ek-article ${PROSE}`}
+                    onClick={onBodyClick}
+                    dangerouslySetInnerHTML={{ __html: f.answerHtml }}
+                  />
+                </div>
+              ))}
+            </section>
+          </>
+        ) : failed ? (
+          <p className="mt-8 text-[17px] text-slate-700">
+            This guide didn't load.{" "}
+            <a href={path} className={LINK}>Try again</a>
+          </p>
+        ) : (
+          <div aria-busy="true" className="mt-8 min-h-[50vh]" />
+        )}
 
         <nav aria-label="Related" className="mt-12 border-t border-slate-100 pt-8 text-[17px]">
           <h2 className="text-lg font-bold">Keep reading</h2>
           <ul className="mt-3 space-y-2">
             {more.map((a) => (
               <li key={a.slug}>
-                <Link to={`/resources/${a.slug}`} className="font-semibold text-brand underline underline-offset-2">
+                <Link to={`/resources/${a.slug}`} className={LINK}>
                   {a.title}
                 </Link>
               </li>
             ))}
             <li>
-              <Link to="/results" className="font-semibold text-brand underline underline-offset-2">
+              <Link to="/results" className={LINK}>
                 Results from agents we work with
               </Link>
             </li>
             <li>
-              <Link to="/resources" className="font-semibold text-brand underline underline-offset-2">
+              <Link to="/resources" className={LINK}>
                 All guides
               </Link>
             </li>
@@ -157,7 +217,7 @@ function Article({ article }) {
         </nav>
       </article>
 
-      <BookCallCta />
+      <ArticleCta article={meta} />
     </ResourceLayout>
   );
 }

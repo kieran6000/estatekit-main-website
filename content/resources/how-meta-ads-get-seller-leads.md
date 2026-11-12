@@ -21,6 +21,21 @@ Housing ads on Meta run under a special ad category, so targeting by age, gender
 
 Qualified leads go straight to the agent's WhatsApp, and the agent makes the call. Leads who aren't ready yet get followed up automatically until they are. You can see what this looks like for real agents on our [results page](/results).
 
+| Step | What happens | Who does it |
+|---|---|---|
+| Ad | A homeowner sees the offer | Meta |
+| Form | They answer a few questions | The homeowner |
+| Call | You phone them | You |
+
+:::mistakes
+- Waiting until the next day to call a new lead.
+- Treating every lead the same, whatever they answered on the form.
+:::
+
+:::proof
+Placeholder proof block. Put one real EstateKit result here, with the agent's name, area and numbers.
+:::
+
 ## Frequently asked questions
 
 ### Why ask questions on the form?

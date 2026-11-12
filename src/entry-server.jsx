@@ -13,21 +13,30 @@ import App from "./App";
 import { HeadContext, createHeadCollector } from "./lib/head";
 import { setRenderTime } from "./lib/renderClock";
 import { PRERENDER_ROUTES } from "./routes";
-import { ARTICLES } from "./lib/resources";
+import { ARTICLES, articleSource, preloadForPath } from "./lib/resources";
+import { AUTHOR } from "./config/schema";
 
 export const routes = [
   ...PRERENDER_ROUTES,
   "/resources",
   ...ARTICLES.map((a) => `/resources/${a.slug}`),
+  AUTHOR.path,
 ];
 
-/** For the sitemap: each article's URL path and when it last changed. */
-export const articles = ARTICLES.map((a) => ({
-  path: `/resources/${a.slug}`,
-  updatedDate: a.updatedDate,
-}));
+/** For the sitemap: resource pages that aren't in public/sitemap.xml. */
+export const sitemapExtras = [
+  { path: "/resources" },
+  ...ARTICLES.map((a) => ({ path: `/resources/${a.slug}`, updatedDate: a.updatedDate })),
+  { path: AUTHOR.path },
+];
 
-export function render(url, builtAt) {
+/** For preloading: each article page and the source file its text lives in. */
+export const articleFiles = Object.fromEntries(
+  ARTICLES.map((a) => [`/resources/${a.slug}`, articleSource(a.slug)]),
+);
+
+export async function render(url, builtAt) {
+  await preloadForPath(url);
   setRenderTime(builtAt);
   const head = createHeadCollector();
   const html = renderToString(

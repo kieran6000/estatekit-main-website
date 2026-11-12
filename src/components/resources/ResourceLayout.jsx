@@ -37,23 +37,60 @@ export default function ResourceLayout({ children }) {
   );
 }
 
-/** The "book a call" block that ends every guide and the index. */
-export function BookCallCta() {
+function CtaBlock({ title, text, button, to }) {
   return (
     <section className="border-t border-slate-100 bg-slate-50 px-4 py-14 text-center sm:px-6">
-      <h2 className="mx-auto max-w-xl text-2xl font-black leading-tight sm:text-3xl">
-        Want this running for you?
-      </h2>
-      <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600">
-        Book a call and we'll show you what Meta ads and a seller lead funnel
-        would look like in your area.
-      </p>
+      <h2 className="mx-auto max-w-xl text-2xl font-black leading-tight sm:text-3xl">{title}</h2>
+      {text ? (
+        <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600">{text}</p>
+      ) : null}
       <Link
-        to="/pitch"
+        to={to}
         className="mt-7 inline-block rounded bg-brand px-8 py-4 text-base font-black uppercase tracking-wide text-white transition-opacity hover:opacity-90"
       >
-        Book a call
+        {button}
       </Link>
     </section>
   );
+}
+
+/** The "book a call" block: the default end of a guide, and of the index. */
+export function BookCallCta() {
+  return (
+    <CtaBlock
+      title="Want this running for you?"
+      text="Book a call and we'll show you what Meta ads and a seller lead funnel would look like in your area."
+      button="Book a call"
+      to="/pitch"
+    />
+  );
+}
+
+/**
+ * The block that ends a guide, picked by its `cta` frontmatter: "call"
+ * (the default), "training", or "tool" with its own title, text, button and
+ * link.
+ */
+export function ArticleCta({ article }) {
+  if (article.cta === "training") {
+    return (
+      <CtaBlock
+        title="Want to see the whole system first?"
+        text="Free training on the seller attraction system South African agents are using to book listing appointments without cold calling."
+        button="Get the free training"
+        to="/training"
+      />
+    );
+  }
+  if (article.cta === "tool") {
+    return (
+      <CtaBlock
+        title={article.ctaTitle}
+        text={article.ctaText}
+        button={article.ctaButton}
+        to={article.ctaHref}
+      />
+    );
+  }
+  return <BookCallCta />;
 }

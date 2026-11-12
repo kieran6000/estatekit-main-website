@@ -19,6 +19,8 @@ import Rebook from "./pages/Rebook";
 import RebookLink from "./pages/RebookLink";
 import Resources from "./pages/Resources";
 import ResourceArticle from "./pages/ResourceArticle";
+import Author from "./pages/Author";
+import { AUTHOR } from "./config/schema";
 
 export default function App() {
   // Who EstateKit is, on every page, so a crawler landing anywhere can tie
@@ -51,6 +53,7 @@ export default function App() {
         <Route path="/sakhile-results" element={<SakhileResults />} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/resources/:slug" element={<ResourceArticle />} />
+        <Route path={AUTHOR.path} element={<Author />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

@@ -1,4 +1,32 @@
 import { SITE_URL } from "../hooks/usePageMeta";
+import { TEAM } from "./team";
+
+/**
+ * The person behind the resource guides. The bio shows on the author page
+ * (/authors/kieran-ouseb). Add profile links to `sameAs` (LinkedIn,
+ * Instagram, YouTube): they go into the page's schema and help search
+ * engines tie the guides to a real person.
+ */
+export const AUTHOR = {
+  name: "Kieran Ouseb",
+  role: "Founder of EstateKit",
+  path: "/authors/kieran-ouseb",
+  photo: TEAM.find((m) => m.name === "Kieran Ouseb")?.photo,
+  bio: [
+    "Kieran Ouseb is the founder of EstateKit. Since 2022, EstateKit has run done-for-you Meta ads, seller lead funnels and CRM follow-up for South African residential estate agents.",
+  ],
+  sameAs: [],
+};
+
+export const AUTHOR_ID = `${SITE_URL}${AUTHOR.path}#person`;
+
+/** How articles and the organisation point at the author. */
+export const AUTHOR_REF = {
+  "@type": "Person",
+  "@id": AUTHOR_ID,
+  name: AUTHOR.name,
+  url: `${SITE_URL}${AUTHOR.path}`,
+};
 
 /**
  * The business itself, as schema.org sees it. Shares its @id with the
@@ -15,11 +43,5 @@ export const ORGANIZATION_SCHEMA = {
   description:
     "Done-for-you Meta ads, seller lead funnels and CRM nurture for South African residential estate agents.",
   areaServed: { "@type": "Country", name: "South Africa" },
-  founder: { "@type": "Person", name: "Kieran Ouseb" },
-};
-
-/** The author line on every resource article. */
-export const AUTHOR = {
-  name: "Kieran Ouseb",
-  role: "Founder of EstateKit",
+  founder: AUTHOR_REF,
 };

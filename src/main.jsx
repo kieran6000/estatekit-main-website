@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import { setRenderTime } from './lib/renderClock'
+import { preloadForPath } from './lib/resources'
 
 const root = document.getElementById('root')
 const app = (
@@ -23,7 +24,12 @@ const built = root.dataset.route
 
 if (built && built === here && root.hasChildNodes()) {
   setRenderTime(Number(root.dataset.builtAt))
-  hydrateRoot(root, app)
+  // A guide's full text is its own file. Have it in hand before hydrating
+  // so the first render matches the HTML. The page is already readable
+  // meanwhile; if the file fails to load, React rebuilds the page instead.
+  preloadForPath(here)
+    .catch(() => {})
+    .then(() => hydrateRoot(root, app))
 } else {
   createRoot(root).render(app)
 }
