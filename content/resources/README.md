@@ -80,6 +80,31 @@ The id is the 10 characters at the end of the Wistia link.
 :::video z6oqli7c8o Juani on her first six weeks
 ```
 
+**Images.** Put the file in `content/resources/images` (WebP is best; keep it
+under about 200 kB), then add it on its own line. The text in quotes becomes the
+caption, and the text in square brackets is the description for screen readers
+and Google, so say what the image shows.
+
+```md
+![Bar chart of cost per lead by area](images/chart-cost-per-lead-by-area.svg "Cost per seller lead, June to November 2026.")
+```
+
+Blur or black out names, numbers, emails and addresses in screenshots first.
+The charts are drawn by `scripts/resource-charts.mjs`: update the numbers at the
+top of that file and run `node scripts/resource-charts.mjs`.
+
+**Cover image.** Optional. Shown at the top of the guide, on its card on
+/resources and the homepage, and when the link is shared. Use a WebP or PNG
+(not an SVG) so it works as a share image.
+
+```md
+image: images/funnel-ad-to-survey.webp
+imageAlt: What the image shows
+```
+
+**Featured.** Add `featured: true` to the one guide that should lead /resources
+and the homepage's guides section.
+
 **Tables.** Normal Markdown tables. Wide ones scroll sideways on a phone.
 
 ```md

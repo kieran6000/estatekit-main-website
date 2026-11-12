@@ -1,5 +1,6 @@
 import { SITE_URL } from "../hooks/usePageMeta";
-import { TEAM } from "./team";
+// A 400px copy of the team photo in assets/kieran.png, which is 1.9 MB.
+import avatar from "../../assets/kieran-avatar.webp";
 
 /**
  * The person behind the resource guides. The bio shows on the author page
@@ -11,7 +12,7 @@ export const AUTHOR = {
   name: "Kieran Ouseb",
   role: "Founder of EstateKit",
   path: "/authors/kieran-ouseb",
-  photo: TEAM.find((m) => m.name === "Kieran Ouseb")?.photo,
+  photo: avatar,
   bio: [
     "Kieran Ouseb is the founder of EstateKit. Since 2022, EstateKit has run done-for-you Meta ads, seller lead funnels and CRM follow-up for South African residential estate agents.",
   ],

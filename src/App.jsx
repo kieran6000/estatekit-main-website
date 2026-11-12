@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import PageActivity from "./components/PageActivity";
+import ScrollToTop from "./components/ScrollToTop";
 import { useJsonLd } from "./hooks/useJsonLd";
 import { clearRenderTime } from "./lib/renderClock";
 import { ORGANIZATION_SCHEMA } from "./config/schema";
@@ -35,6 +36,7 @@ export default function App() {
     <>
       {/* One view card per page, for every route. */}
       <PageActivity />
+      <ScrollToTop />
 
       <Routes>
         <Route path="/" element={<Home />} />

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { FiYoutube, FiInstagram, FiLinkedin, FiMail, FiMapPin } from "react-icons/fi";
 import logo2 from "../../../assets/primary.svg";
 import { NAV_LINKS } from "./navLinks";
@@ -56,7 +57,15 @@ export default function HomeFooter() {
         <hr className="border-slate-800 mb-6" />
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <p className="text-slate-600 text-xs">© 2026 EstateKit — All rights reserved.</p>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <p className="text-slate-600 text-xs">© 2026 EstateKit — All rights reserved.</p>
+            <Link to="/resources" className="text-slate-400 text-xs font-semibold hover:text-brand transition-colors">
+              Free guides
+            </Link>
+            <Link to="/results" className="text-slate-400 text-xs font-semibold hover:text-brand transition-colors">
+              Results
+            </Link>
+          </div>
           <div className="flex flex-wrap gap-2">
             {["Google Ads Certified", "Meta Business Partner"].map((b) => (
               <span

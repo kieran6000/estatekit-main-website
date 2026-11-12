@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../../../assets/primary.svg";
+import logo from "../../../assets/secondary.svg";
 import { firstRenderNow } from "../../lib/renderClock";
 
 /** Header and footer for /resources, the same plain frame as /results. */
