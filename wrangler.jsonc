@@ -1,0 +1,14 @@
+// The www.estatekit.co Worker (static assets only, no code).
+// Deploy with: npm run build && npx wrangler deploy
+// The apex (estatekit.co) is a separate Worker, estatekit-apex, that
+// redirects to www.
+{
+  "name": "estatekit-main",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    // Unknown paths get dist/404.html with a real 404 status; the app shell
+    // inside it still renders the site's own 404 page.
+    "not_found_handling": "404-page"
+  }
+}
