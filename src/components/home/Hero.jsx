@@ -1,5 +1,7 @@
 import { FiArrowRight } from "react-icons/fi";
-import badge from "../../../assets/badge2.png";
+import badge from "../../../assets/badge2.webp";
+// Was hot-linked from Unsplash at full size; this is the same photo, compressed and served from our own domain.
+import heroBg from "../../../assets/hero-bg.webp";
 import Stars from "./Stars";
 
 export default function Hero() {
@@ -7,11 +9,16 @@ export default function Hero() {
     <section
       className="relative pt-10 pb-10"
       style={{
-        backgroundImage: `url('https://images.unsplash.com/photo-1580060839134-75a5edca2e99?auto=format&fit=crop&w=1800&q=80')`,
+        backgroundImage: `url('${heroBg}')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
+      {/* A background image is only found once the CSS has loaded. This
+          lets the browser start on it straight away; it's the largest thing
+          on screen when the page opens. */}
+      <link rel="preload" as="image" href={heroBg} fetchpriority="high" />
+
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/70 pointer-events-none"></div>
       <div className="relative z-10 max-w-6xl mx-auto px-6">

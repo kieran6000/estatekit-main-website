@@ -25,7 +25,7 @@ export default function TestimonialVideo({ type = 'wistia', mediaId, youtubeId, 
         )}
 
         {type === 'audio' && audioSrc && (
-          <audio controls className="mx-auto w-full">
+          <audio controls preload="none" className="mx-auto w-full">
             <source src={audioSrc} type="audio/mpeg" />
             Your browser does not support the audio element.
           </audio>

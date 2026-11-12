@@ -1,7 +1,7 @@
-import kieran from "../../assets/kieran.png";
-import aldredt from "../../assets/aldredt.png";
-import khushil from "../../assets/khushil.png";
-import josephat from "../../assets/josephat.png";
+import kieran from "../../assets/kieran-team.webp";
+import aldredt from "../../assets/aldredt-team.webp";
+import khushil from "../../assets/khushil-team.webp";
+import josephat from "../../assets/josephat-team.webp";
 
 /** Shared so the home page section and the pitch-page strip can't drift. */
 export const TEAM = [

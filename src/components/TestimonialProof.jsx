@@ -1,27 +1,27 @@
 import TestimonialImage from "./TestimonialImage";
 
-import angie from "../../assets/angie.png";
+import angie from "../../assets/proof/angie.webp";
 import lebo from "../../assets/lebo.webp";
-import mpho from "../../assets/mpho.jpg";
+import mpho from "../../assets/proof/mpho.webp";
 import thabo from "../../assets/thabo.webp";
 
-import test1 from "../../assets/Layer 1.png";
-import test3 from "../../assets/Layer 3.png";
-import test4 from "../../assets/Layer 4.png";
-import test6 from "../../assets/Layer 6.png";
-import test7 from "../../assets/Layer 7.png";
-import test8 from "../../assets/Layer 8.png";
-import test9 from "../../assets/Layer 9.png";
-import test11 from "../../assets/layer 11.png";
-import test12 from "../../assets/layer 12.png";
-import test13 from "../../assets/layer 13.png";
-import test14 from "../../assets/layer 14.png";
-import test15 from "../../assets/layer 15.png";
-import test16 from "../../assets/layer 16.png";
-import test17 from "../../assets/layer 17.png";
-import test18 from "../../assets/layer 18.png";
-import test19 from "../../assets/layer 19.png";
-import test20 from "../../assets/Layer 20.png";
+import test1 from "../../assets/proof/layer-1.webp";
+import test3 from "../../assets/proof/layer-3.webp";
+import test4 from "../../assets/proof/layer-4.webp";
+import test6 from "../../assets/proof/layer-6.webp";
+import test7 from "../../assets/proof/layer-7.webp";
+import test8 from "../../assets/proof/layer-8.webp";
+import test9 from "../../assets/proof/layer-9.webp";
+import test11 from "../../assets/proof/layer-11.webp";
+import test12 from "../../assets/proof/layer-12.webp";
+import test13 from "../../assets/proof/layer-13.webp";
+import test14 from "../../assets/proof/layer-14.webp";
+import test15 from "../../assets/proof/layer-15.webp";
+import test16 from "../../assets/proof/layer-16.webp";
+import test17 from "../../assets/proof/layer-17.webp";
+import test18 from "../../assets/proof/layer-18.webp";
+import test19 from "../../assets/proof/layer-19.webp";
+import test20 from "../../assets/proof/layer-20.webp";
 
 /**
  * `alt` is doing real work here, not accessibility box-ticking: a wall of
