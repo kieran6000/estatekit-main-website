@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import AnnouncementBar from "../components/AnnouncementBar";
 import CopyBridge from "../components/CopyBridge";
 import BookingEmbed from "../components/BookingEmbed";
@@ -15,7 +16,8 @@ import { FaCircleExclamation } from "react-icons/fa6";
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 const PitchRES = () => {
-  const isVSLPage = location.pathname.includes("vsl");
+  const { pathname } = useLocation();
+  const isVSLPage = pathname.includes("vsl");
 
   usePageMeta({
     title: "For Agents Impacted by the POPI Act | EstateKit",

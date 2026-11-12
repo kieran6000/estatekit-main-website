@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import CopyBridge from "../components/CopyBridge";
 import SocialProof from "../components/SocialProof";
@@ -17,7 +18,8 @@ import heroBg from "../../assets/training-hero-bg.webp";
 import logo from "../../assets/primary.svg";
 
 const PitchVSL = () => {
-  const isVSLPage = location.pathname.includes("pitch-vsl");
+  const { pathname } = useLocation();
+  const isVSLPage = pathname.includes("pitch-vsl");
 
   const [qualification, setQualification] = useState(null);
   const { getFields: getVideoFields } = useVideoTracking();
@@ -148,7 +150,9 @@ const PitchVSL = () => {
     title: "Guaranteed Closed Deals or Your Money Back | EstateKit",
     description:
       "A proven system that delivers real listing appointments and closed deals for real estate agents — guaranteed, or your money back.",
-    path: isVSLPage ? "/pitch-vsl" : "/pitch",
+    // /pitch-vsl is /pitch plus the video, kept live for ad funnels. One
+    // canonical so search engines index a single page.
+    path: "/pitch",
   });
 
   return (

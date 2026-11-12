@@ -5,6 +5,7 @@ node_modules/
 
 # build output
 dist/
+dist-ssr/
 
 # env files
 .env
@@ -13,3 +14,6 @@ dist/
 
 # editor/OS
 .DS_Store
+
+# local Cloudflare Pages emulator state
+.wrangler/

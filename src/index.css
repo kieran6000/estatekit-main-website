@@ -112,3 +112,45 @@ wistia-player[media-id="ahm5osiwq8"]:not(:defined) {
     min-height: 800px;
   }
 }
+
+/* ── Resource guides: boxes and tables from the Markdown ──────────────────
+   Written as :::mistakes / :::proof blocks and Markdown tables in
+   content/resources (see its README). Scoped to .ek-article so nothing
+   else on the site picks them up. */
+.ek-article .ek-callout {
+  @apply my-8 border-l-4 px-5 py-4;
+}
+.ek-article .ek-callout > :first-child,
+.ek-article .ek-callout > .ek-callout-label + * {
+  @apply mt-0;
+}
+.ek-article .ek-callout > :last-child {
+  @apply mb-0;
+}
+.ek-article .ek-callout-label {
+  @apply mb-2 text-xs font-black uppercase tracking-widest;
+}
+.ek-article .ek-callout-mistakes {
+  @apply border-amber-400 bg-amber-50;
+}
+.ek-article .ek-callout-mistakes .ek-callout-label {
+  @apply text-amber-700;
+}
+.ek-article .ek-callout-proof {
+  @apply border-emerald-500 bg-emerald-50;
+}
+.ek-article .ek-callout-proof .ek-callout-label {
+  @apply text-emerald-700;
+}
+.ek-article .ek-table {
+  @apply my-6 overflow-x-auto;
+}
+.ek-article table {
+  @apply w-full border-collapse text-left text-[15px];
+}
+.ek-article th {
+  @apply border-b-2 border-slate-200 bg-slate-50 px-3 py-2 font-bold text-slate-900;
+}
+.ek-article td {
+  @apply border-b border-slate-100 px-3 py-2 align-top;
+}

@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import SocialProof from "../components/SocialProof";
 import TestimonialsSection from "../components/TestimonialsSection";
 import ProofScreenshots from "../components/ProofScreenshots";
@@ -38,14 +39,17 @@ function CaseStudyCard({ initials, name, location, stat, detail }) {
 }
 
 const Training = () => {
-  const isVSLPage = location.pathname.includes("training-vsl");
+  const { pathname } = useLocation();
+  const isVSLPage = pathname.includes("training-vsl");
 
   usePageMeta({
     title:
       "Free Training: The System That Got Juani 11 Listings in 6 Weeks | EstateKit",
     description:
       "Free training for agents already doing 9+ deals a year — the exact seller-attraction system real South African agents are using to book listing appointments without cold calling.",
-    path: isVSLPage ? "/training-vsl" : "/training",
+    // /training-vsl is /training plus the video, kept live for ad funnels.
+    // One canonical so search engines index a single page.
+    path: "/training",
   });
 
   return (

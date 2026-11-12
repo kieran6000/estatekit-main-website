@@ -16,10 +16,9 @@ import HomeFooter from "../components/home/HomeFooter";
 
 export default function Home() {
   usePageMeta({
-    title:
-      "EstateKit — Guaranteed Listing Appointments for SA Real Estate Agents",
+    title: "EstateKit | Meta Ads & Seller Funnels for SA Estate Agents",
     description:
-      "Real estate specialised marketing for South African agents. Lead generation, ISA services, CRM & nurturing — all done in-house, with guaranteed results.",
+      "Since 2022 we've helped 70+ South African estate agents get seller leads with done-for-you Meta ads, lead funnels and CRM follow-up. You get the lead, you call.",
     path: "/",
   });
 

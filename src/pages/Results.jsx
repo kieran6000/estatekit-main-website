@@ -7,6 +7,7 @@ import { usePageMeta } from "../hooks/usePageMeta";
 import { useJsonLd } from "../hooks/useJsonLd";
 import { VIDEO_TESTIMONIALS, PROOF_STATS } from "../config/proof";
 import logo from "../../assets/primary.svg";
+import { firstRenderNow } from "../lib/renderClock";
 
 const SITE = "https://estatekit.co";
 
@@ -222,7 +223,7 @@ const Results = () => {
       <footer className="border-t border-slate-100 px-4 py-8 text-center sm:px-6">
         <img src={logo} alt="EstateKit" className="mx-auto h-7 opacity-60" />
         <p className="mt-4 text-xs text-slate-400">
-          © {new Date().getFullYear()} EstateKit. Results shown are from real
+          © {firstRenderNow().getFullYear()} EstateKit. Results shown are from real
           clients and are not a guarantee of your own.
         </p>
       </footer>
