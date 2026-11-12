@@ -1,5 +1,9 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import PageActivity from "./components/PageActivity";
+import { useJsonLd } from "./hooks/useJsonLd";
+import { clearRenderTime } from "./lib/renderClock";
+import { ORGANIZATION_SCHEMA } from "./config/schema";
 import Home from "./pages/Home";
 import PitchVSL from "./pages/PitchVSL";
 import NotFound from "./pages/NotFound";
@@ -13,8 +17,18 @@ import SakhileResults from "./pages/SakhileResults";
 import Results from "./pages/Results";
 import Rebook from "./pages/Rebook";
 import RebookLink from "./pages/RebookLink";
+import Resources from "./pages/Resources";
+import ResourceArticle from "./pages/ResourceArticle";
 
 export default function App() {
+  // Who EstateKit is, on every page, so a crawler landing anywhere can tie
+  // the page to the business.
+  useJsonLd(ORGANIZATION_SCHEMA, "ek-org-jsonld");
+
+  // Runs after every page component has mounted, so anything that rendered
+  // the build's date to match the static HTML has already moved on to today.
+  useEffect(() => clearRenderTime(), []);
+
   return (
     <>
       {/* One view card per page, for every route. */}
@@ -35,6 +49,8 @@ export default function App() {
         <Route path="/training/thank-you" element={<TrainingThanks />} />
         <Route path="/juani-results" element={<JuaniResults />} />
         <Route path="/sakhile-results" element={<SakhileResults />} />
+        <Route path="/resources" element={<Resources />} />
+        <Route path="/resources/:slug" element={<ResourceArticle />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

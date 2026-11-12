@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { HeadContext } from "../lib/head";
 
-const SITE_URL = "https://estatekit.co";
+export const SITE_URL = "https://estatekit.co";
 
 function upsertMetaByName(name, content) {
   let el = document.querySelector(`meta[name="${name}"]`);
@@ -38,7 +39,9 @@ function upsertCanonical(href) {
 /**
  * Sets document.title plus meta description/canonical/Open Graph/Twitter
  * card tags for the current route. Zero-dependency stand-in for
- * react-helmet — fine for a single-page-at-a-time SPA with no SSR.
+ * react-helmet. At build time the same values go into the prerendered
+ * <head> (see src/lib/head.js); in the browser the effect below finds those
+ * tags and keeps them in step on every route change.
  *
  * @param {object} config
  * @param {string} config.title
@@ -57,6 +60,11 @@ export function usePageMeta({
   type = "website",
   noindex = false,
 }) {
+  // Prerendering: hand the tags to the build instead of the DOM. Effects
+  // never run on the server, so this is the only way they reach the HTML.
+  const reportHead = useContext(HeadContext);
+  reportHead?.("meta", { title, description, url: `${SITE_URL}${path}`, image, type, noindex });
+
   useEffect(() => {
     const url = `${SITE_URL}${path}`;
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { usePageMeta } from "../hooks/usePageMeta";
 import "./Webinar.css";
+import { firstRenderNow } from "../lib/renderClock";
 
 // ── Config, edit these to launch ──────────────────────────────────────────────
 const CONFIG = {
@@ -175,7 +176,7 @@ export default function Webinar() {
           <div className="fnote">
             <strong>EstateKit</strong>, done-for-you seller lead generation for South African real estate agents.<br />
             Results shown are from real EstateKit clients and are not a guarantee of your own results.<br />
-            © {new Date().getFullYear()} EstateKit. All rights reserved.
+            © {firstRenderNow().getFullYear()} EstateKit. All rights reserved.
           </div>
         </div>
       </footer>

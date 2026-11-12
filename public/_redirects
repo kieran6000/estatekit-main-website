@@ -1,1 +1,9 @@
 /r/:id https://yfcnsvrhojpysrzqrkdi.supabase.co/functions/v1/video-click?l=:id&to=rebook 302
+
+# Client-only pages: no prerendered file, so serve the empty app shell.
+# Anything else without a file gets 404.html, which is the same shell, so the
+# app still renders it; only the status code differs.
+/thank-you /app 200
+/training/thank-you /app 200
+/rebook /app 200
+/rebook/link /app 200

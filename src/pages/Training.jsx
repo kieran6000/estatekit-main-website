@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import SocialProof from "../components/SocialProof";
 import TestimonialsSection from "../components/TestimonialsSection";
 import ProofScreenshots from "../components/ProofScreenshots";
@@ -38,7 +39,8 @@ function CaseStudyCard({ initials, name, location, stat, detail }) {
 }
 
 const Training = () => {
-  const isVSLPage = location.pathname.includes("training-vsl");
+  const { pathname } = useLocation();
+  const isVSLPage = pathname.includes("training-vsl");
 
   usePageMeta({
     title:

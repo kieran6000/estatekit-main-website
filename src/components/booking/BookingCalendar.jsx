@@ -1,4 +1,13 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { firstRenderNow } from "../../lib/renderClock";
+
+/** First of the month as a timestamp: a stable value for the whole month. */
+const monthStart = (d) => new Date(d.getFullYear(), d.getMonth(), 1).getTime();
+const monthNow = () => monthStart(new Date());
+const monthAtRender = () => monthStart(firstRenderNow());
+// The month isn't watched live; a page left open over midnight on the 1st
+// keeps showing the month it opened in, as it always has.
+const neverChanges = () => () => {};
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = [
@@ -65,10 +74,17 @@ export default function BookingCalendar({
       form panel they've already scrolled past. */
   pickedSummary = null,
 }) {
-  const today = useMemo(() => new Date(), []);
+  // A prerendered page was built in some month; the visitor may be in
+  // another. useSyncExternalStore renders the build's month while hydrating,
+  // so it matches the static HTML, then React re-renders with the real one.
+  const thisMonth = useSyncExternalStore(neverChanges, monthNow, monthAtRender);
+  const today = useMemo(() => new Date(thisMonth), [thisMonth]);
   const slotsRef = useRef(null);
-  const [cursor, setCursor] = useState(
-    () => new Date(today.getFullYear(), today.getMonth(), 1),
+  // Months ahead of the current one, so the grid follows `today` if it moves.
+  const [offset, setOffset] = useState(0);
+  const cursor = useMemo(
+    () => new Date(today.getFullYear(), today.getMonth() + offset, 1),
+    [today, offset],
   );
 
   // The last day this month with a real slot — weeks entirely past it are
@@ -105,14 +121,12 @@ export default function BookingCalendar({
     [availability, cursor],
   );
 
-  const atFirstMonth =
-    cursor.getFullYear() === today.getFullYear() &&
-    cursor.getMonth() === today.getMonth();
+  const atFirstMonth = offset === 0;
 
   // Changing month must drop the selection — otherwise last month's times
   // stay on screen next to an "no slots this month" notice.
   const step = (delta) => {
-    setCursor((c) => new Date(c.getFullYear(), c.getMonth() + delta, 1));
+    setOffset((o) => o + delta);
     onMonthChange?.();
   };
 

@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { HeadContext } from "../lib/head";
 
 /**
  * Injects a JSON-LD <script> for the current route and removes it on unmount.
@@ -7,10 +8,16 @@ import { useEffect } from "react";
  * organisation detail directly in the result — on a page that is mostly
  * screenshots, it is the difference between "indexed" and "understood".
  *
+ * When the page is prerendered the schema goes straight into the built
+ * <head> under the same id, and the effect below replaces it in place.
+ *
  * @param {object|object[]} schema - one schema.org object, or several
  * @param {string} id - element id so repeat renders replace rather than stack
  */
 export function useJsonLd(schema, id = "ek-jsonld") {
+  const reportHead = useContext(HeadContext);
+  if (schema) reportHead?.("jsonLd", schema, id);
+
   useEffect(() => {
     if (!schema) return;
 
